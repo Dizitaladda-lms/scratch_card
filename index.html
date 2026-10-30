@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>DizitalAdda – Diwali Scratch & Win 2026</title>
+  
+  <!-- Google Fonts: Festive & Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Rozha+One&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Festive Particle & Fireworks Canvas Background -->
+  <canvas id="fireworks-canvas"></canvas>
+
+  <div class="mobile-viewport-container">
+    
+    <!-- Top Decorative Toran / Diwali Header Accent -->
+    <div class="diwali-toran-bar">
+      <div class="toran-pattern"></div>
+    </div>
+
+    <!-- Main Mobile Shell -->
+    <main class="app-wrapper">
+
+      <!-- Header Section -->
+      <header class="app-header">
+        <div class="brand-badge">
+          <span class="sparkle-icon">✨</span>
+          <span class="brand-name">DIZITALADDA</span>
+          <span class="sparkle-icon">✨</span>
+        </div>
+        
+        <h1 class="main-title">DIWALI SCRATCH &amp; WIN</h1>
+        <div class="year-banner">
+          <span class="diya-left">🪔</span>
+          <span class="year-text">2026 FESTIVE EDITION</span>
+          <span class="diya-right">🪔</span>
+        </div>
+        
+        <p class="campaign-subtitle">11 Exclusive Rewards for All Courses &amp; Skill-Based Programs</p>
+
+        <!-- Sound toggle & Reset demo -->
+        <div class="header-controls">
+          <button id="sound-toggle-btn" class="ctrl-btn" title="Toggle Sound">
+            <span id="sound-icon">🔊</span> <span id="sound-label">Sound On</span>
+          </button>
+          <button id="card-flip-toggle" class="ctrl-btn flip-highlight-btn" style="display: none;">
+            <span>🔄</span> <span id="flip-btn-text">View Card Back</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Student Verification Bar / Status -->
+      <section class="student-bar" id="student-bar">
+        <div class="student-bar-inner">
+          <div class="student-icon">🎓</div>
+          <div class="student-info-text">
+            <span class="student-lbl">Student / Reg:</span>
+            <span class="student-val" id="disp-student-name">Unverified Student</span>
+          </div>
+          <button id="edit-student-btn" class="chip-btn" title="Edit Student Reference">Edit</button>
+        </div>
+      </section>
+
+      <!-- Device Restriction Notice (One Card Per Mobile) -->
+      <div class="device-lock-banner" id="device-lock-banner">
+        <span class="lock-icon">🔒</span>
+        <span class="lock-text">1 Scratch Card per Mobile Device • Tamper Protected</span>
+      </div>
+
+      <!-- Scratch Card 3D Flip Container -->
+      <div class="card-scene">
+        <div class="scratch-card-3d" id="scratch-card-3d">
+
+          <!-- ================= FRONT OF CARD ================= -->
+          <div class="card-face card-front" id="card-front">
+            
+            <!-- Festive Ornate Golden Border SVG -->
+            <div class="ornate-border"></div>
+
+            <div class="card-inner-content">
+              
+              <!-- Card Top Header -->
+              <div class="card-top-row">
+                <div class="mini-brand">DIZITALADDA</div>
+                <div class="festive-tag">DIWALI BONANZA</div>
+              </div>
+
+              <!-- Offer Reward Layer (Revealed Underneath) -->
+              <div class="reward-layer" id="reward-layer">
+                
+                <div class="reward-glow-ring"></div>
+
+                <div class="badge-wrapper">
+                  <div class="shimmer-badge" id="reward-badge">CONGRATULATIONS!</div>
+                </div>
+
+                <div class="reward-icon-container" id="reward-icon-box">
+                  <div class="reward-main-icon" id="reward-icon">🎁</div>
+                </div>
+
+                <h3 class="reward-offer-title" id="reward-title">Corporate Industry Visit</h3>
+                
+                <div class="reward-highlight-box" id="reward-highlight">
+                  <p class="reward-desc-text" id="reward-desc">
+                    You've Won an Exclusive Corporate Industry Visit + 4,000 Additional Skill Coins!
+                  </p>
+                </div>
+
+                <div class="coin-pill" id="reward-coins-pill">
+                  <span class="coin-symbol">🪙</span>
+                  <span class="coin-text" id="reward-coins-val">+4,000 Skill Coins</span>
+                </div>
+
+                <!-- Already Scratched Stamped Watermark -->
+                <div class="claimed-stamp" id="claimed-stamp">
+                  <div class="stamp-inner">
+                    <span>OFFICIAL CLAIMED</span>
+                    <small id="stamp-date">2026-10-30</small>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Canvas Scratch Layer (Overlay on top of reward) -->
+              <div class="scratch-canvas-container" id="scratch-canvas-container">
+                <canvas id="scratch-canvas"></canvas>
+                
+                <div class="scratch-instruction-overlay" id="scratch-instruction">
+                  <div class="instruction-diya">🪔</div>
+                  <div class="instruction-title">SCRATCH HERE</div>
+                  <div class="instruction-sub">Rub with your finger to reveal reward!</div>
+                  <div class="hand-gesture-icon">👆</div>
+                </div>
+              </div>
+
+              <!-- Card Bottom Bar -->
+              <div class="card-front-bottom">
+                <span class="card-code-preview" id="preview-card-id">ID: DA-DIWALI26-•••••</span>
+                <span class="flip-hint" id="front-flip-hint">Flip to see Back ➔</span>
+              </div>
+
+            </div>
+
+            <!-- Bottom Corner Diyas -->
+            <div class="corner-diya diya-bl">🪔</div>
+            <div class="corner-diya diya-br">🪔</div>
+          </div>
+
+          <!-- ================= BACK OF CARD ================= -->
+          <div class="card-face card-back" id="card-back">
+            <div class="ornate-border back-border"></div>
+
+            <div class="card-inner-content back-content">
+              
+              <!-- Back Header -->
+              <div class="back-header">
+                <div class="back-brand">DIZITALADDA • OFFICIAL REWARD VOUCHER</div>
+                <div class="back-diya-badge">🪔 2026 🪔</div>
+              </div>
+
+              <!-- Unique Scratch Card ID Section -->
+              <div class="back-block id-block">
+                <div class="block-label">UNIQUE SCRATCH CARD ID</div>
+                <div class="unique-id-display">
+                  <span id="back-scratch-id">DA-DW26-XXXX-XXXX</span>
+                  <button class="copy-id-btn" id="copy-id-btn" title="Copy Card ID">📋 Copy</button>
+                </div>
+              </div>
+
+              <!-- Student Name & Admission Reference -->
+              <div class="back-grid-row">
+                <div class="back-block">
+                  <div class="block-label">STUDENT NAME</div>
+                  <div class="block-value highlight-val" id="back-student-name">Satya Verma</div>
+                </div>
+                <div class="back-block">
+                  <div class="block-label">ADMISSION / MOBILE REF</div>
+                  <div class="block-value" id="back-admission-ref">ADM-2026-9871</div>
+                </div>
+              </div>
+
+              <!-- Won Offer Summary -->
+              <div class="back-block offer-summary-block">
+                <div class="block-label">ALLOCATED FESTIVE BENEFIT</div>
+                <div class="won-summary-text" id="back-won-title">Corporate Industry Visit + 4,000 Coins</div>
+              </div>
+
+              <!-- Reward Redemption Instructions -->
+              <div class="back-block instructions-block">
+                <div class="block-label">REWARD REDEMPTION INSTRUCTIONS</div>
+                <ol class="redemption-list">
+                  <li><strong>Step 1:</strong> Take a screenshot of this card or note down your <strong>Unique Card ID</strong>.</li>
+                  <li><strong>Step 2:</strong> Present this voucher at the DizitalAdda Admission Desk or send to official WhatsApp support at <strong>+91 98765 43210</strong>.</li>
+                  <li><strong>Step 3:</strong> Provide your student admission reference to authenticate the voucher.</li>
+                  <li><strong>Step 4:</strong> Additional Skill Coins &amp; complimentary benefits will be automatically mapped to your portal account.</li>
+                </ol>
+              </div>
+
+              <!-- Last Date To Claim -->
+              <div class="back-block deadline-block">
+                <div class="deadline-pill">
+                  <span class="cal-icon">⏳</span>
+                  <div class="deadline-text-group">
+                    <span class="deadline-lbl">LAST DATE TO CLAIM REWARD:</span>
+                    <strong class="deadline-val" id="back-last-date">20th November 2026</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Terms and Conditions -->
+              <div class="back-block tc-block">
+                <div class="block-label">TERMS &amp; CONDITIONS</div>
+                <ul class="tc-list">
+                  <li><strong>Course Eligibility:</strong> Applicable for all newly enrolled students and candidates registering for any Advance Skill Program or Expert Skill Program.</li>
+                  <li><strong>Non-Combinable:</strong> Rewards cannot be combined, merged, or clubbed with other pre-existing corporate fee waivers, affiliate promos, or external cash vouchers.</li>
+                  <li><strong>One Card Per Device:</strong> Strictly 1 scratch card per mobile device / registered student. Repeated or cloned attempts are invalid.</li>
+                  <li><strong>Non-Transferable:</strong> Reward benefits, Skill Coins, and Industry Visit passes are non-cashable and strictly non-transferable.</li>
+                  <li>DizitalAdda reserves the final right of verification and reward allotment under Diwali 2026 policy.</li>
+                </ul>
+              </div>
+
+              <!-- Official Security Verification Seal -->
+              <div class="back-footer-row">
+                <div class="security-barcode">
+                  <div class="barcode-lines">||| | |||| | ||| || |||| | |||</div>
+                  <span class="barcode-caption">SECURITY VERIFIED • DIZITALADDA AUTHENTIC</span>
+                </div>
+                <div class="official-seal">
+                  <span class="seal-icon">✨🪔✨</span>
+                  <span class="seal-text">VERIFIED 2026</span>
+                </div>
+              </div>
+
+              <!-- Flip Back Action -->
+              <button class="back-flip-trigger-btn" id="back-flip-trigger-btn">
+                <span>🔄</span> Flip Back to Card Front
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Action Buttons Row (Download / WhatsApp / Flip) -->
+      <section class="action-buttons-container" id="action-buttons-container">
+        
+        <div class="revealed-actions" id="revealed-actions" style="display: none;">
+          <button class="action-btn primary-action" id="whatsapp-share-btn">
+            <span class="btn-icon">💬</span> Claim on WhatsApp
+          </button>
+          
+          <button class="action-btn secondary-action" id="download-voucher-btn">
+            <span class="btn-icon">📥</span> Save Voucher
+          </button>
+
+          <button class="action-btn flip-action" id="flip-card-action-btn">
+            <span class="btn-icon">🔄</span> Flip to Back
+          </button>
+        </div>
+
+        <!-- Info note -->
+        <p class="scratch-status-note" id="scratch-status-note">
+          ✨ Use your finger or touch to scratch off the golden diya foil above!
+        </p>
+
+      </section>
+
+      <!-- All 11 Offers Overview Drawer / Modal Trigger -->
+      <section class="offers-catalogue-teaser">
+        <div class="catalogue-card">
+          <div class="cat-left">
+            <span class="cat-icon">🎉</span>
+            <div class="cat-text">
+              <strong>11 Exclusive Diwali Offers Pool</strong>
+              <small>Industry Visits, AI Automation, Silver Coins &amp; More</small>
+            </div>
+          </div>
+          <button class="cat-view-btn" id="open-catalogue-btn">View All</button>
+        </div>
+      </section>
+
+      <!-- Footer Info -->
+      <footer class="app-footer">
+        <p class="footer-copy">© 2026 DIZITALADDA. All Rights Reserved.</p>
+        <p class="footer-sub">Celebrating Diwali with Knowledge, Skills &amp; Success 🪔</p>
+        
+        <!-- Discreet Demo Reset for testing -->
+        <div class="admin-reset-area">
+          <button id="admin-reset-btn" class="reset-link-btn" title="Reset device for test scratch">
+            ⚙️ Reset Scratch (Demo Mode)
+          </button>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ================= MODAL 1: STUDENT REGISTRATION / VERIFICATION ================= -->
+  <div class="modal-overlay" id="student-modal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-diya">🪔</div>
+      <h3 class="modal-title">Student Details</h3>
+      <p class="modal-desc">Please confirm your Name and Admission Reference / Mobile Number to unlock your Diwali Scratch Card.</p>
+      
+      <form id="student-form" class="modal-form">
+        <div class="input-group">
+          <label for="input-student-name">Full Student Name *</label>
+          <input type="text" id="input-student-name" required placeholder="e.g. Satya Verma" maxlength="50" autocomplete="name">
+        </div>
+
+        <div class="input-group">
+          <label for="input-admission-ref">Admission Reference / Mobile No. *</label>
+          <input type="text" id="input-admission-ref" required placeholder="e.g. ADM-2026-9871 or 9876543210" maxlength="30">
+        </div>
+
+        <div class="modal-buttons">
+          <button type="submit" class="modal-submit-btn">
+            <span>✨</span> Confirm &amp; Unlock Scratch Card
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: 11 OFFERS CATALOGUE MODAL ================= -->
+  <div class="modal-overlay" id="catalogue-modal" style="display: none;">
+    <div class="modal-card catalogue-modal-card">
+      <div class="catalogue-modal-header">
+        <div class="cat-header-title">
+          <span>🪔</span> 11 Exclusive Diwali Offers Pool (2026)
+        </div>
+        <button class="close-modal-btn" id="close-catalogue-btn">&times;</button>
+      </div>
+      
+      <div class="catalogue-list" id="catalogue-list">
+        <!-- Rendered via JS -->
+      </div>
+      
+      <div class="cat-modal-footer">
+        <button class="cat-close-btn" id="cat-close-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-notification" id="toast-notification">Notification</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
