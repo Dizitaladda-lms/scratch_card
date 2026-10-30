@@ -691,32 +691,64 @@ body {
 }
 
 /* ==========================================================================
-   ONE BIG DIAGONAL "DIZITALADDA" WITH DIYA ON EACH LETTER (BEHIND CARD)
+   DIAGONAL WINGS: DIZITAL (LEFT SIDE) & ADDA (RIGHT SIDE)
+   WITH DIYA ON EACH LETTER
    ========================================================================== */
-.diagonal-diya-brand-track {
+.diagonal-brand-wrapper {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-25deg);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 14px;
-  z-index: 1;
+  inset: 0;
   pointer-events: none;
-  width: max-content;
-  white-space: nowrap;
+  z-index: 1;
 }
 
-.diagonal-diya-brand-track::before {
+.diagonal-wing {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  width: max-content;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Wing Left: "DIZITAL" on Left Side of Card */
+.wing-left {
+  right: calc(100% + 16px);
+  top: 60%;
+  transform: translateY(-50%) rotate(-24deg);
+  transform-origin: right center;
+}
+
+.wing-left::after {
   content: '';
   position: absolute;
-  left: -80px;
-  right: -80px;
-  height: 4px;
+  left: -20px;
+  right: -10px;
+  height: 3px;
   bottom: 4px;
-  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.4), rgba(255, 153, 0, 0.9), rgba(255, 215, 0, 0.4), transparent);
-  box-shadow: 0 0 20px 4px rgba(255, 170, 0, 0.65), 0 0 45px 8px rgba(255, 215, 0, 0.4);
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.4), rgba(255, 153, 0, 0.9));
+  box-shadow: 0 0 15px 3px rgba(255, 170, 0, 0.6);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+/* Wing Right: "ADDA" on Right Side of Card */
+.wing-right {
+  left: calc(100% + 16px);
+  top: 40%;
+  transform: translateY(-50%) rotate(-24deg);
+  transform-origin: left center;
+}
+
+.wing-right::after {
+  content: '';
+  position: absolute;
+  left: -10px;
+  right: -20px;
+  height: 3px;
+  bottom: 4px;
+  background: linear-gradient(90deg, rgba(255, 153, 0, 0.9), rgba(255, 215, 0, 0.4), transparent);
+  box-shadow: 0 0 15px 3px rgba(255, 170, 0, 0.6);
   border-radius: 50%;
   z-index: -1;
 }
@@ -729,8 +761,8 @@ body {
 }
 
 .diya-lamp {
-  width: 32px;
-  height: 24px;
+  width: 28px;
+  height: 22px;
   margin-bottom: -4px;
   z-index: 2;
   filter: drop-shadow(0 0 8px rgba(255, 153, 0, 0.75));
@@ -750,14 +782,14 @@ body {
 
 .letter-text {
   font-family: var(--font-heading);
-  font-size: 52px;
+  font-size: 44px;
   font-weight: 900;
   line-height: 0.9;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   background: linear-gradient(180deg, #ffffff 0%, #ffea9f 30%, #d8ad62 70%, #996e28 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 16px rgba(255, 215, 0, 0.45));
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 14px rgba(255, 215, 0, 0.45));
   z-index: 1;
 }
 
@@ -776,39 +808,75 @@ body {
   }
 }
 
-/* Responsive adjustment for Mobile viewports (<= 768px) */
+/* Tablet & Mobile Responsiveness */
+@media (max-width: 1100px) {
+  .wing-left {
+    right: calc(100% + 8px);
+    gap: 6px;
+  }
+  .wing-right {
+    left: calc(100% + 8px);
+    gap: 6px;
+  }
+  .letter-text {
+    font-size: 32px;
+  }
+  .diya-lamp {
+    width: 22px;
+    height: 18px;
+  }
+}
+
 @media (max-width: 768px) {
   .page-container {
     margin-top: 26px;
     padding-top: 14px;
   }
-  .diagonal-diya-brand-track {
-    gap: 8px;
-    transform: translate(-50%, -50%) rotate(-25deg);
+  /* On Mobile Screens: Keep DIZITAL at Bottom-Left & ADDA at Top-Right clearly visible */
+  .wing-left {
+    right: auto;
+    left: 2px;
+    top: auto;
+    bottom: 24px;
+    transform: rotate(-16deg);
+    gap: 5px;
+    z-index: 4;
   }
-  .diya-lamp {
-    width: 22px;
-    height: 18px;
-    margin-bottom: -3px;
+  .wing-right {
+    left: auto;
+    right: 2px;
+    top: 6px;
+    transform: rotate(-16deg);
+    gap: 5px;
+    z-index: 4;
   }
   .letter-text {
-    font-size: 34px;
-    letter-spacing: 1px;
+    font-size: 26px;
+    letter-spacing: 0.8px;
+  }
+  .diya-lamp {
+    width: 18px;
+    height: 14px;
+    margin-bottom: -2px;
   }
 }
 
 @media (max-width: 380px) {
-  .diagonal-diya-brand-track {
-    gap: 5px;
+  .wing-left {
+    bottom: 14px;
+    gap: 3px;
   }
-  .diya-lamp {
-    width: 18px;
-    height: 15px;
-    margin-bottom: -2px;
+  .wing-right {
+    top: 2px;
+    gap: 3px;
   }
   .letter-text {
-    font-size: 27px;
+    font-size: 21px;
     letter-spacing: 0.5px;
+  }
+  .diya-lamp {
+    width: 15px;
+    height: 12px;
   }
 }
 
