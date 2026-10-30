@@ -1,22 +1,20 @@
 /**
- * DIZITALADDA – DIWALI SCRATCH & WIN 2026
- * Mobile Scratch Card Engine
+ * DIZITALADDA • DIWALI SPECIAL 2026
+ * Ultra-Clean Luxury Dark & Gold Mobile Scratch Engine
+ * 
  * Features:
- *  - 11 Festive Offers with exact inventory repetitions
- *  - True Randomized Pool Distribution (no sequential or predictable loop)
- *  - Strict 1-Scratch-Per-Device Lockout via localStorage
- *  - Interactive 3D Card Flip (Front: Scratch & Reward, Back: Official Voucher Details)
- *  - Touch & Mouse optimized Canvas Scratch with transparent pixel detection
- *  - Diwali Web Audio API Sound Effects (Scratch sound & Celebration Fanfare)
- *  - Fireworks & Confetti celebration engine
+ *  - 11 Exclusive Rewards Pool (Exact Repeat Limits)
+ *  - High-Entropy Non-Sequential Random Distribution (No Loop)
+ *  - Clean 1-Scratch-Per-Device Lockout (localStorage)
+ *  - Minimalist 3D Card Flip (Front: Reference Design / Back: Official Voucher Details)
+ *  - Touch & Mouse optimized Canvas Scratch
+ *  - Subtle Celebratory Fireworks & Audio
  */
 
 (function () {
   'use strict';
 
-  // ==========================================================================
-  // CONFIGURATION & 11 EXCLUSIVE OFFERS DATA
-  // ==========================================================================
+  // 11 EXCLUSIVE OFFERS DATA WITH EXACT REPEAT COUNTS
   const OFFERS_DATA = [
     {
       id: 1,
@@ -26,7 +24,7 @@
       coins: "+4,000 Skill Coins",
       repeatCount: 3,
       icon: "🏢",
-      highlight: "Exclusive Corporate Industry Visit + 4,000 Coins"
+      highlight: "Corporate Industry Visit + 4,000 Coins"
     },
     {
       id: 2,
@@ -36,7 +34,7 @@
       coins: "+1,000 Skill Coins",
       repeatCount: 7,
       icon: "🤖",
-      highlight: "1 Month AI Automation Classes + 1,000 Coins"
+      highlight: "1 Month AI Classes + 1,000 Coins"
     },
     {
       id: 3,
@@ -46,7 +44,7 @@
       coins: "+2,000 Skill Coins",
       repeatCount: 4,
       icon: "📜",
-      highlight: "Exclusive AI Training Certificate + 2,000 Coins"
+      highlight: "AI Training Certificate + 2,000 Coins"
     },
     {
       id: 4,
@@ -56,17 +54,17 @@
       coins: "+1,500 Skill Coins",
       repeatCount: 2,
       icon: "📈",
-      highlight: "1 Month Ad Credits (Expert Program) + 1,500 Coins"
+      highlight: "1 Month Ad Credits + 1,500 Coins"
     },
     {
       id: 5,
       badge: "LUCKY YOU!",
       title: "Exclusive Course Fee Deal",
       desc: "You've Unlocked an Exclusive Course Offer!\n• Any Advance Skill Program at Just ₹35,000!\n• Any Expert Skill Program at Just ₹65,000!",
-      coins: "Mega Fee Discount",
+      coins: "Advance ₹35k | Expert ₹65k",
       repeatCount: 1,
       icon: "💎",
-      highlight: "Advance Program ₹35,000 | Expert Program ₹65,000"
+      highlight: "Advance Program ₹35,000 / Expert Program ₹65,000"
     },
     {
       id: 6,
@@ -76,7 +74,7 @@
       coins: "+3,000 Skill Coins",
       repeatCount: 3,
       icon: "⚡",
-      highlight: "Exclusive AI Classes + 3,000 Skill Coins"
+      highlight: "AI Automation Classes + 3,000 Coins"
     },
     {
       id: 7,
@@ -86,7 +84,7 @@
       coins: "+500 Skill Coins",
       repeatCount: 10,
       icon: "🌟",
-      highlight: "Lifetime Learning & Mentorship + 500 Coins"
+      highlight: "Lifetime Learning Support + 500 Coins"
     },
     {
       id: 8,
@@ -103,10 +101,10 @@
       badge: "EARN WHILE YOU LEARN!",
       title: "Refer & Earn Reward",
       desc: "You've Unlocked 1,000 Skill Coins + An Opportunity to Earn ₹5,000 Extra Cash by Referring a Friend!",
-      coins: "+1,000 Skill Coins & ₹5k Opportunity",
+      coins: "+1,000 Skill Coins & ₹5k Cash",
       repeatCount: 6,
       icon: "🤝",
-      highlight: "₹5,000 Cash Referral Bonus + 1,000 Coins"
+      highlight: "₹5,000 Cash Referral + 1,000 Coins"
     },
     {
       id: 10,
@@ -123,319 +121,191 @@
       badge: "MEGA DIWALI JACKPOT!",
       title: "Silver Coin + AI Bonus",
       desc: "Amazing! You've Won an Exclusive Silver Coin + 1 Month of Complimentary AI Automation Classes!",
-      coins: "Silver Coin + AI Classes",
+      coins: "Silver Coin + 1 Month AI Classes",
       repeatCount: 2,
       icon: "👑",
-      highlight: "Exclusive Silver Coin + 1 Month AI Classes"
+      highlight: "Silver Coin + 1 Month AI Classes"
     }
   ];
 
   const STORAGE_KEY_CLAIM = 'dizitaladda_diwali_claim_2026';
   const STORAGE_KEY_POOL = 'dizitaladda_diwali_pool_2026';
-  const STORAGE_KEY_STUDENT = 'dizitaladda_diwali_student_2026';
-  const DEFAULT_CLAIM_DEADLINE = '20th November 2026';
+  const CLAIM_DEADLINE = '5th November 2026';
 
-  // App State
-  let soundEnabled = true;
+  // State
   let isCardFlipped = false;
   let isScratching = false;
   let hasScratched = false;
   let assignedOffer = null;
   let currentCardId = null;
-  let studentData = {
-    name: 'Satya Verma',
-    ref: 'ADM-2026-9871'
-  };
 
-  // Canvas elements
+  // Canvas
   let canvas, ctx;
   let canvasWidth = 0;
   let canvasHeight = 0;
-  let scratchPercent = 0;
+  let lastScratchX = null;
+  let lastScratchY = null;
   let scratchCheckThrottle = 0;
-
-  // Web Audio Context for synthesize festive audio
-  let audioCtx = null;
 
   // DOM Elements
   const card3D = document.getElementById('scratch-card-3d');
-  const cardFront = document.getElementById('card-front');
-  const cardBack = document.getElementById('card-back');
-  const cardFlipToggle = document.getElementById('card-flip-toggle');
-  const frontFlipHint = document.getElementById('front-flip-hint');
-  const backFlipTriggerBtn = document.getElementById('back-flip-trigger-btn');
-  const flipCardActionBtn = document.getElementById('flip-card-action-btn');
-  const soundToggleBtn = document.getElementById('sound-toggle-btn');
-  const soundIcon = document.getElementById('sound-icon');
-  const soundLabel = document.getElementById('sound-label');
-
-  // Student elements
-  const dispStudentName = document.getElementById('disp-student-name');
-  const editStudentBtn = document.getElementById('edit-student-btn');
-  const studentModal = document.getElementById('student-modal');
-  const studentForm = document.getElementById('student-form');
-  const inputStudentName = document.getElementById('input-student-name');
-  const inputAdmissionRef = document.getElementById('input-admission-ref');
-
-  // Reward display elements
   const rewardBadge = document.getElementById('reward-badge');
   const rewardIcon = document.getElementById('reward-icon');
   const rewardTitle = document.getElementById('reward-title');
   const rewardDesc = document.getElementById('reward-desc');
-  const rewardCoinsVal = document.getElementById('reward-coins-val');
-  const claimedStamp = document.getElementById('claimed-stamp');
-  const stampDate = document.getElementById('stamp-date');
-  const previewCardId = document.getElementById('preview-card-id');
-  const scratchInstruction = document.getElementById('scratch-instruction');
+  const rewardCoinVal = document.getElementById('reward-coin-val');
+  const frontCardId = document.getElementById('front-card-id');
+
   const scratchCanvasContainer = document.getElementById('scratch-canvas-container');
-  const revealedActions = document.getElementById('revealed-actions');
-  const scratchStatusNote = document.getElementById('scratch-status-note');
-  const deviceLockBanner = document.getElementById('device-lock-banner');
+  const scratchPadContent = document.getElementById('scratch-pad-content');
+  const actionDock = document.getElementById('action-dock');
+  const claimWhatsappBtn = document.getElementById('claim-whatsapp-btn');
+  const toggleFlipBtn = document.getElementById('toggle-flip-btn');
+  const flipBackBtn = document.getElementById('flip-back-btn');
 
   // Back elements
   const backScratchId = document.getElementById('back-scratch-id');
-  const backStudentName = document.getElementById('back-student-name');
-  const backAdmissionRef = document.getElementById('back-admission-ref');
-  const backWonTitle = document.getElementById('back-won-title');
-  const backLastDate = document.getElementById('back-last-date');
-  const copyIdBtn = document.getElementById('copy-id-btn');
+  const backBenefitTitle = document.getElementById('back-benefit-title');
+  const backDeadline = document.getElementById('back-deadline');
+  const copyCardIdBtn = document.getElementById('copy-card-id-btn');
+  const adminDemoReset = document.getElementById('admin-demo-reset');
+  const toastBubble = document.getElementById('toast-bubble');
 
-  // Actions & Modals
-  const whatsappShareBtn = document.getElementById('whatsapp-share-btn');
-  const downloadVoucherBtn = document.getElementById('download-voucher-btn');
-  const openCatalogueBtn = document.getElementById('open-catalogue-btn');
-  const closeCatalogueBtn = document.getElementById('close-catalogue-btn');
-  const catCloseBtn = document.getElementById('cat-close-btn');
-  const catalogueModal = document.getElementById('catalogue-modal');
-  const catalogueList = document.getElementById('catalogue-list');
-  const adminResetBtn = document.getElementById('admin-reset-btn');
-  const toastNotification = document.getElementById('toast-notification');
+  // Web Audio Context
+  let audioCtx = null;
 
-  // ==========================================================================
-  // INITIALIZATION
-  // ==========================================================================
+  // Initialize
   window.addEventListener('DOMContentLoaded', () => {
-    loadStudentData();
     initAudio();
     initFireworks();
     checkDeviceClaimStatus();
     setupEventListeners();
-    renderCatalogue();
   });
 
   // ==========================================================================
-  // STUDENT DATA MANAGEMENT
-  // ==========================================================================
-  function loadStudentData() {
-    try {
-      const savedStudent = localStorage.getItem(STORAGE_KEY_STUDENT);
-      if (savedStudent) {
-        studentData = JSON.parse(savedStudent);
-      }
-    } catch (e) {
-      console.warn("Storage access restricted or unavailable:", e);
-    }
-    updateStudentDisplay();
-  }
-
-  function saveStudentData(name, ref) {
-    studentData = {
-      name: name.trim() || 'Valued Student',
-      ref: ref.trim() || 'ADM-2026-FESTIVE'
-    };
-    try {
-      localStorage.setItem(STORAGE_KEY_STUDENT, JSON.stringify(studentData));
-    } catch (e) {
-      console.warn("Could not save student data:", e);
-    }
-    updateStudentDisplay();
-  }
-
-  function updateStudentDisplay() {
-    dispStudentName.textContent = `${studentData.name} (${studentData.ref})`;
-    backStudentName.textContent = studentData.name;
-    backAdmissionRef.textContent = studentData.ref;
-    inputStudentName.value = studentData.name;
-    inputAdmissionRef.value = studentData.ref;
-  }
-
-  // ==========================================================================
-  // INVENTORY POOL & RANDOM DISTRIBUTION LOGIC
-  // "ye nhi ki ak coupan lagta a raha hai ak loop ya coordination ke hisab se"
+  // INVENTORY POOL & RANDOMIZATION LOGIC (NO PREDICTABLE LOOP)
   // ==========================================================================
   function getOrCreateInventoryPool() {
     try {
-      const storedPool = localStorage.getItem(STORAGE_KEY_POOL);
-      if (storedPool) {
-        const parsed = JSON.parse(storedPool);
+      const stored = localStorage.getItem(STORAGE_KEY_POOL);
+      if (stored) {
+        const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
           return parsed;
         }
       }
     } catch (e) {
-      console.warn("Inventory storage read error:", e);
+      console.warn("Storage pool read error:", e);
     }
 
-    // Build fresh inventory array with exact repeat counts
-    // Offer 1: 3, Offer 2: 7, Offer 3: 4, Offer 4: 2, Offer 5: 1, Offer 6: 3,
-    // Offer 7: 10, Offer 8: 8, Offer 9: 6, Offer 10: 2, Offer 11: 2
-    const freshPool = [];
+    // Build fresh inventory array: 48 items
+    const pool = [];
     OFFERS_DATA.forEach(offer => {
       for (let i = 0; i < offer.repeatCount; i++) {
-        freshPool.push(offer.id);
+        pool.push(offer.id);
       }
     });
 
-    // Fisher-Yates shuffle array to prevent any sequential bias
-    for (let i = freshPool.length - 1; i > 0; i--) {
+    // Fisher-Yates high-entropy shuffle
+    for (let i = pool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      const temp = freshPool[i];
-      freshPool[i] = freshPool[j];
-      freshPool[j] = temp;
+      const temp = pool[i];
+      pool[i] = pool[j];
+      pool[j] = temp;
     }
 
-    saveInventoryPool(freshPool);
-    return freshPool;
+    saveInventoryPool(pool);
+    return pool;
   }
 
   function saveInventoryPool(pool) {
     try {
       localStorage.setItem(STORAGE_KEY_POOL, JSON.stringify(pool));
     } catch (e) {
-      console.warn("Inventory storage write error:", e);
+      console.warn("Storage pool write error:", e);
     }
   }
 
-  /**
-   * Draw a truly randomized coupon from remaining pool
-   */
   function drawRandomOffer() {
     const pool = getOrCreateInventoryPool();
     if (pool.length === 0) {
-      // Re-populate pool if exhausted
-      const resetPool = getOrCreateInventoryPool();
+      const fresh = getOrCreateInventoryPool();
       return drawRandomOffer();
     }
 
-    // Select random index from current remaining pool
     const randomIndex = Math.floor(Math.random() * pool.length);
-    const chosenOfferId = pool[randomIndex];
+    const chosenId = pool[randomIndex];
 
-    // Remove the chosen card from the pool so repeat limit is strictly respected
+    // Remove to respect repeat quota
     pool.splice(randomIndex, 1);
     saveInventoryPool(pool);
 
-    return OFFERS_DATA.find(o => o.id === chosenOfferId) || OFFERS_DATA[0];
+    return OFFERS_DATA.find(o => o.id === chosenId) || OFFERS_DATA[0];
   }
 
-  // Generate Unique Scratch Card ID (e.g. DA-DW26-7824-3912)
-  function generateUniqueCardId() {
+  function generateCardId() {
     const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
-    const randPart1 = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-    const randPart2 = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-    return `DA-DW26-${randPart1}-${randPart2}`;
+    const p1 = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    const p2 = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    return `DA-DW26-${p1}-${p2}`;
   }
 
   // ==========================================================================
-  // DEVICE RESTRICTION CHECK (1 SCRATCH PER MOBILE DEVICE)
-  // "ak coupan ak mobile se ak hi baar stract hoga dubara vo repat nhi hog"
+  // 1-SCRATCH-PER-DEVICE LOCKOUT
   // ==========================================================================
   function checkDeviceClaimStatus() {
     let savedClaim = null;
     try {
       const raw = localStorage.getItem(STORAGE_KEY_CLAIM);
-      if (raw) {
-        savedClaim = JSON.parse(raw);
-      }
+      if (raw) savedClaim = JSON.parse(raw);
     } catch (e) {
-      console.warn("Claim storage read error:", e);
+      console.warn("Storage claim read error:", e);
     }
 
     if (savedClaim && savedClaim.claimed) {
-      // Device has ALREADY scratched a card!
+      // Device has already scratched
       hasScratched = true;
       assignedOffer = OFFERS_DATA.find(o => o.id === savedClaim.offerId) || OFFERS_DATA[0];
-      currentCardId = savedClaim.cardId || generateUniqueCardId();
-      
-      if (savedClaim.studentName) {
-        studentData.name = savedClaim.studentName;
-        studentData.ref = savedClaim.admissionRef;
-        updateStudentDisplay();
-      }
-
-      renderClaimedState(savedClaim);
+      currentCardId = savedClaim.cardId || generateCardId();
+      renderClaimedView();
     } else {
-      // First time on this device: Prepare a fresh card
-      prepareFreshCard();
+      // First visit on this device: Prepare fresh scratch card
+      hasScratched = false;
+      currentCardId = generateCardId();
+      assignedOffer = drawRandomOffer();
+      renderFreshView();
     }
   }
 
-  function prepareFreshCard() {
-    hasScratched = false;
-    currentCardId = generateUniqueCardId();
-    assignedOffer = drawRandomOffer();
-
-    renderOfferCard(assignedOffer, currentCardId);
+  function renderFreshView() {
+    populateOfferInfo(assignedOffer, currentCardId);
     initScratchCanvas();
-
-    cardFlipToggle.style.display = 'none';
-    revealedActions.style.display = 'none';
-    scratchInstruction.classList.remove('fade');
-    scratchStatusNote.innerHTML = "✨ Use your finger or touch to scratch off the golden diya foil above!";
-    
-    deviceLockBanner.innerHTML = `
-      <span class="lock-icon">🔒</span>
-      <span class="lock-text">1 Scratch Card per Mobile Device • Tamper Protected</span>
-    `;
-    deviceLockBanner.style.borderColor = 'rgba(255, 153, 0, 0.5)';
+    actionDock.style.display = 'none';
   }
 
-  function renderClaimedState(claimData) {
-    renderOfferCard(assignedOffer, currentCardId);
-
-    // Hide scratch canvas
+  function renderClaimedView() {
+    populateOfferInfo(assignedOffer, currentCardId);
     if (scratchCanvasContainer) {
       scratchCanvasContainer.classList.add('hidden');
     }
-
-    // Show claimed stamp
-    claimedStamp.classList.add('visible');
-    const claimDate = claimData.claimedAt ? new Date(claimData.claimedAt).toLocaleDateString('en-IN', {
-      day: 'numeric', month: 'short', year: 'numeric'
-    }) : 'CLAIMED';
-    stampDate.textContent = `ON ${claimDate.toUpperCase()}`;
-
-    // Enable flip buttons and share actions
-    cardFlipToggle.style.display = 'inline-flex';
-    revealedActions.style.display = 'grid';
-    
-    scratchStatusNote.innerHTML = `
-      <strong style="color:#ffd700;">✅ Card Already Claimed on this Device:</strong><br>
-      Your reward is locked with Unique ID: <strong>${currentCardId}</strong>. Flip to see full voucher details!
-    `;
-
-    deviceLockBanner.innerHTML = `
-      <span class="lock-icon">🔒</span>
-      <span class="lock-text">Reward Claimed &amp; Locked to this Mobile Device</span>
-    `;
-    deviceLockBanner.style.borderColor = '#25d366';
+    actionDock.style.display = 'grid';
   }
 
-  function renderOfferCard(offer, cardId) {
+  function populateOfferInfo(offer, cardId) {
     rewardBadge.textContent = offer.badge;
     rewardIcon.textContent = offer.icon;
     rewardTitle.textContent = offer.title;
     rewardDesc.textContent = offer.desc;
-    rewardCoinsVal.textContent = offer.coins;
-    
-    previewCardId.textContent = `ID: ${cardId}`;
+    rewardCoinVal.textContent = offer.coins;
+    frontCardId.textContent = cardId;
+
     backScratchId.textContent = cardId;
-    backWonTitle.textContent = `${offer.title} (${offer.coins})`;
-    backLastDate.textContent = DEFAULT_CLAIM_DEADLINE;
+    backBenefitTitle.textContent = `${offer.title} (${offer.coins})`;
+    backDeadline.textContent = CLAIM_DEADLINE;
   }
 
   // ==========================================================================
-  // CANVAS SCRATCH SURFACE IMPLEMENTATION
+  // CANVAS SCRATCH SURFACE (Soft Matte Gold Foil)
   // ==========================================================================
   function initScratchCanvas() {
     canvas = document.getElementById('scratch-canvas');
@@ -444,54 +314,33 @@
 
     const container = scratchCanvasContainer;
     const rect = container.getBoundingClientRect();
-    canvasWidth = Math.round(rect.width || container.offsetWidth || 340);
-    canvasHeight = Math.round(rect.height || container.offsetHeight || 380);
+    canvasWidth = Math.round(rect.width || container.offsetWidth || 360);
+    canvasHeight = Math.round(rect.height || container.offsetHeight || 190);
 
-    // Support High-DPI Mobile Screens (Retina / OLED)
     const dpr = window.devicePixelRatio || 1;
     canvas.width = canvasWidth * dpr;
     canvas.height = canvasHeight * dpr;
     ctx.scale(dpr, dpr);
 
-    drawGoldenFestiveFoil(ctx, canvasWidth, canvasHeight);
-
-    // Attach Scratch Interaction Listeners
+    drawMatteGoldFoil(ctx, canvasWidth, canvasHeight);
     setupScratchEvents();
   }
 
-  function drawGoldenFestiveFoil(ctx, w, h) {
+  function drawMatteGoldFoil(ctx, w, h) {
     ctx.save();
 
-    // Base Rich Festive Gold Gradient
+    // Soft Matte Luxury Gold Foil
     const goldGrad = ctx.createLinearGradient(0, 0, w, h);
-    goldGrad.addColorStop(0, '#ffd700');
-    goldGrad.addColorStop(0.25, '#ffe57f');
-    goldGrad.addColorStop(0.5, '#d4af37');
-    goldGrad.addColorStop(0.75, '#b8860b');
-    goldGrad.addColorStop(1, '#ffd700');
+    goldGrad.addColorStop(0, '#d8b066');
+    goldGrad.addColorStop(0.35, '#cda255');
+    goldGrad.addColorStop(0.7, '#be9246');
+    goldGrad.addColorStop(1, '#d8b066');
     ctx.fillStyle = goldGrad;
     ctx.fillRect(0, 0, w, h);
 
-    // Metallic Diagonal Shimmer Stripes
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
-    ctx.lineWidth = 14;
-    for (let x = -w; x < w * 2; x += 36) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x + h, h);
-      ctx.stroke();
-    }
-
-    // Traditional Festive Rangoli / Mandala Pattern in Center
-    ctx.fillStyle = 'rgba(100, 10, 30, 0.12)';
-    ctx.beginPath();
-    ctx.arc(w / 2, h / 2, 70, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Golden Border Frame Inside Canvas
-    ctx.strokeStyle = 'rgba(184, 134, 11, 0.7)';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(6, 6, w - 12, h - 12);
+    // Subtle metallic highlights
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.fillRect(0, 0, w, h * 0.4);
 
     ctx.restore();
   }
@@ -499,12 +348,12 @@
   function setupScratchEvents() {
     isScratching = false;
 
-    // Mouse Events
+    // Mouse
     canvas.addEventListener('mousedown', startScratch);
     window.addEventListener('mousemove', scratchMove);
     window.addEventListener('mouseup', stopScratch);
 
-    // Touch Events (Mobile Finger Touch)
+    // Touch (Mobile Finger)
     canvas.addEventListener('touchstart', startScratchTouch, { passive: false });
     window.addEventListener('touchmove', scratchMoveTouch, { passive: false });
     window.addEventListener('touchend', stopScratchTouch);
@@ -515,7 +364,7 @@
     isScratching = true;
     lastScratchX = null;
     lastScratchY = null;
-    scratchInstruction.classList.add('fade');
+    scratchPadContent.classList.add('fade');
     playScratchSound();
     scratchAt(e.clientX, e.clientY);
   }
@@ -525,9 +374,6 @@
     scratchAt(e.clientX, e.clientY);
   }
 
-  let lastScratchX = null;
-  let lastScratchY = null;
-
   function stopScratch() {
     isScratching = false;
     lastScratchX = null;
@@ -536,13 +382,13 @@
 
   function startScratchTouch(e) {
     if (hasScratched) return;
-    e.preventDefault(); // Stop mobile pull-to-refresh or page dragging!
+    e.preventDefault();
     isScratching = true;
-    scratchInstruction.classList.add('fade');
-    playScratchSound();
-    const touch = e.touches[0];
     lastScratchX = null;
     lastScratchY = null;
+    scratchPadContent.classList.add('fade');
+    playScratchSound();
+    const touch = e.touches[0];
     scratchAt(touch.clientX, touch.clientY);
   }
 
@@ -566,21 +412,19 @@
     const y = clientY - rect.top;
 
     ctx.save();
-    // 'destination-out' erases the pixels to reveal what's underneath!
     ctx.globalCompositeOperation = 'destination-out';
 
     if (lastScratchX !== null && lastScratchY !== null) {
       ctx.beginPath();
       ctx.moveTo(lastScratchX, lastScratchY);
       ctx.lineTo(x, y);
-      ctx.lineWidth = 54;
+      ctx.lineWidth = 50;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.stroke();
     } else {
       ctx.beginPath();
-      // Brush radius of 27px for smooth scratching on mobile screens
-      ctx.arc(x, y, 27, 0, Math.PI * 2, false);
+      ctx.arc(x, y, 25, 0, Math.PI * 2, false);
       ctx.fill();
     }
 
@@ -588,241 +432,176 @@
     lastScratchY = y;
     ctx.restore();
 
-    // Periodically play scratch friction sound
-    if (Math.random() < 0.3) {
+    if (Math.random() < 0.25) {
       playScratchSound();
     }
 
-    // Check scratch progress throttled every 6 strokes
     scratchCheckThrottle++;
     if (scratchCheckThrottle % 6 === 0) {
-      checkScratchPercentage();
+      checkProgress();
     }
   }
 
-  /**
-   * Calculates the percentage of canvas that has been cleared
-   */
-  function checkScratchPercentage() {
+  function checkProgress() {
     if (hasScratched) return;
 
     try {
       const dpr = window.devicePixelRatio || 1;
       const imgData = ctx.getImageData(0, 0, canvasWidth * dpr, canvasHeight * dpr);
       const pixels = imgData.data;
-      let transparentCount = 0;
-      const totalSampled = pixels.length / 16; // Sample every 4th pixel for high mobile performance
+      let clear = 0;
+      const step = 16;
+      const total = pixels.length / step;
 
-      for (let i = 3; i < pixels.length; i += 16) {
-        if (pixels[i] < 128) { // Alpha channel < 128 considered transparent
-          transparentCount++;
-        }
+      for (let i = 3; i < pixels.length; i += step) {
+        if (pixels[i] < 128) clear++;
       }
 
-      scratchPercent = Math.round((transparentCount / totalSampled) * 100);
-
-      // If user has scratched 45% or more, automatically reveal with celebration!
-      if (scratchPercent >= 45) {
-        revealFullReward();
+      const percent = Math.round((clear / total) * 100);
+      if (percent >= 42) {
+        completeScratch();
       }
-    } catch (err) {
-      console.warn("Pixel check error:", err);
+    } catch (e) {
+      // ignore
     }
   }
 
-  /**
-   * Complete the reveal, trigger victory fanfare, fireworks and lock to device
-   */
-  function revealFullReward() {
+  function completeScratch() {
     if (hasScratched) return;
     hasScratched = true;
 
-    // Smoothly fade out the canvas
     scratchCanvasContainer.classList.add('hidden');
+    actionDock.style.display = 'grid';
 
-    // Show stamp with today's date
-    claimedStamp.classList.add('visible');
-    const today = new Date().toLocaleDateString('en-IN', {
-      day: 'numeric', month: 'short', year: 'numeric'
-    });
-    stampDate.textContent = `ON ${today.toUpperCase()}`;
-
-    // Enable flip buttons and action bar
-    cardFlipToggle.style.display = 'inline-flex';
-    revealedActions.style.display = 'grid';
-
-    // Update status
-    scratchStatusNote.innerHTML = `
-      <strong style="color:#ffd700;">🎉 Congratulations!</strong> Reward unlocked and linked to this device!
-    `;
-
-    // Permanently persist to localStorage for 1-scratch-per-device rule
-    const claimRecord = {
-      claimed: true,
-      cardId: currentCardId,
-      offerId: assignedOffer.id,
-      studentName: studentData.name,
-      admissionRef: studentData.ref,
-      claimedAt: new Date().toISOString()
-    };
-
+    // Lock to device in localStorage
     try {
-      localStorage.setItem(STORAGE_KEY_CLAIM, JSON.stringify(claimRecord));
+      localStorage.setItem(STORAGE_KEY_CLAIM, JSON.stringify({
+        claimed: true,
+        cardId: currentCardId,
+        offerId: assignedOffer.id,
+        claimedAt: new Date().toISOString()
+      }));
     } catch (e) {
-      console.warn("Could not save claim record:", e);
+      console.warn("Storage save error:", e);
     }
 
-    deviceLockBanner.innerHTML = `
-      <span class="lock-icon">🔒</span>
-      <span class="lock-text">Reward Claimed &amp; Locked to this Mobile Device</span>
-    `;
-    deviceLockBanner.style.borderColor = '#25d366';
-
-    // Celebration Audio & Visuals
-    playFanfareSound();
-    triggerCelebrationFireworks();
-    showToast(`🎉 You've unlocked: ${assignedOffer.title}!`);
+    playFanfare();
+    launchFireworks();
+    showToast(`🎉 Reward Unlocked: ${assignedOffer.title}`);
   }
 
   // ==========================================================================
-  // WEB AUDIO SYNTHESIZER (NO EXTERNAL AUDIO FILES NEEDED)
+  // WEB AUDIO (No external MP3 needed)
   // ==========================================================================
   function initAudio() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (AudioContext) {
-      audioCtx = new AudioContext();
-    }
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx) audioCtx = new AudioCtx();
   }
 
-  function resumeAudioContext() {
+  function resumeAudio() {
     if (audioCtx && audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
   }
 
   function playScratchSound() {
-    if (!soundEnabled || !audioCtx) return;
-    resumeAudioContext();
-
+    if (!audioCtx) return;
+    resumeAudio();
     try {
-      const bufferSize = audioCtx.sampleRate * 0.05; // 50ms scratch burst
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * 0.15;
+      const len = audioCtx.sampleRate * 0.04;
+      const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.1;
       }
-
-      const noise = audioCtx.createBufferSource();
-      noise.buffer = buffer;
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
 
       const filter = audioCtx.createBiquadFilter();
       filter.type = 'bandpass';
-      filter.frequency.value = 1400 + Math.random() * 600;
-      filter.Q.value = 3;
+      filter.frequency.value = 1600;
 
       const gain = audioCtx.createGain();
-      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+      gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
 
-      noise.connect(filter);
+      src.connect(filter);
       filter.connect(gain);
       gain.connect(audioCtx.destination);
-
-      noise.start();
-    } catch (e) {
-      // Audio fallback fail silently
-    }
+      src.start();
+    } catch (e) {}
   }
 
-  function playFanfareSound() {
-    if (!soundEnabled || !audioCtx) return;
-    resumeAudioContext();
-
+  function playFanfare() {
+    if (!audioCtx) return;
+    resumeAudio();
     try {
-      // Diwali celebratory musical chime arpeggio: C5, E5, G5, C6
-      const notes = [523.25, 659.25, 783.99, 1046.50];
+      const notes = [587.33, 739.99, 880.00, 1174.66]; // D5, F#5, A5, D6 celebratory chord
       notes.forEach((freq, idx) => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.12);
-
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.12);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.12 + 0.6);
-
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
+        gain.gain.setValueAtTime(0.18, audioCtx.currentTime + idx * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 0.55);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-
-        osc.start(audioCtx.currentTime + idx * 0.12);
-        osc.stop(audioCtx.currentTime + idx * 0.12 + 0.65);
+        osc.start(audioCtx.currentTime + idx * 0.1);
+        osc.stop(audioCtx.currentTime + idx * 0.1 + 0.6);
       });
-    } catch (e) {
-      // Silently ignore
-    }
+    } catch (e) {}
   }
 
   // ==========================================================================
-  // FESTIVE CANVAS FIREWORKS & SPARKLE ENGINE
+  // CELEBRATION FIREWORKS
   // ==========================================================================
   let fwCanvas, fwCtx;
   let particles = [];
-  let isCelebrating = false;
 
   function initFireworks() {
-    fwCanvas = document.getElementById('fireworks-canvas');
+    fwCanvas = document.getElementById('celebration-canvas');
     if (!fwCanvas) return;
     fwCtx = fwCanvas.getContext('2d');
-
-    resizeFwCanvas();
-    window.addEventListener('resize', resizeFwCanvas);
-
-    requestAnimationFrame(renderFireworksLoop);
+    resizeFw();
+    window.addEventListener('resize', resizeFw);
+    requestAnimationFrame(renderFw);
   }
 
-  function resizeFwCanvas() {
+  function resizeFw() {
     if (!fwCanvas) return;
     fwCanvas.width = window.innerWidth;
     fwCanvas.height = window.innerHeight;
   }
 
-  function triggerCelebrationFireworks() {
-    isCelebrating = true;
-    const colors = ['#ffd700', '#ff5100', '#ff0055', '#ffe57f', '#ffffff', '#25d366'];
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight * 0.4;
+  function launchFireworks() {
+    const colors = ['#d8ad62', '#ebd090', '#ffffff', '#25d366', '#ff9900'];
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight * 0.45;
 
-    // Burst 120 festive particles
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 90; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 8 + 2;
+      const speed = Math.random() * 7 + 2;
       particles.push({
-        x: centerX,
-        y: centerY,
+        x: cx,
+        y: cy,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 2,
+        vy: Math.sin(angle) * speed - 1.5,
         color: colors[Math.floor(Math.random() * colors.length)],
-        radius: Math.random() * 3.5 + 1.5,
+        radius: Math.random() * 3 + 1.5,
         alpha: 1,
-        gravity: 0.18,
-        decay: Math.random() * 0.015 + 0.01
+        decay: Math.random() * 0.018 + 0.012
       });
     }
-
-    setTimeout(() => {
-      isCelebrating = false;
-    }, 4000);
   }
 
-  function renderFireworksLoop() {
+  function renderFw() {
     if (fwCtx) {
       fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
-
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += p.gravity;
+        p.vy += 0.16; // gravity
         p.alpha -= p.decay;
 
         if (p.alpha <= 0) {
@@ -839,244 +618,78 @@
         fwCtx.restore();
       }
     }
-    requestAnimationFrame(renderFireworksLoop);
+    requestAnimationFrame(renderFw);
   }
 
   // ==========================================================================
-  // 3D CARD FLIP HANDLERS
+  // CARD FLIP & ACTIONS
   // ==========================================================================
   function flipCard() {
     isCardFlipped = !isCardFlipped;
     if (isCardFlipped) {
       card3D.classList.add('flipped');
-      document.getElementById('flip-btn-text').textContent = 'View Card Front';
+      toggleFlipBtn.innerHTML = `<span>🔄</span> View Card Front`;
     } else {
       card3D.classList.remove('flipped');
-      document.getElementById('flip-btn-text').textContent = 'View Card Back';
+      toggleFlipBtn.innerHTML = `<span>🔄</span> View Card Details / T&amp;C`;
     }
   }
 
-  // ==========================================================================
-  // EVENT LISTENERS & MODAL BINDINGS
-  // ==========================================================================
   function setupEventListeners() {
-    // Card Flip buttons
-    cardFlipToggle.addEventListener('click', flipCard);
-    frontFlipHint.addEventListener('click', flipCard);
-    backFlipTriggerBtn.addEventListener('click', flipCard);
-    flipCardActionBtn.addEventListener('click', flipCard);
+    toggleFlipBtn.addEventListener('click', flipCard);
+    flipBackBtn.addEventListener('click', flipCard);
 
-    // Sound toggle
-    soundToggleBtn.addEventListener('click', () => {
-      soundEnabled = !soundEnabled;
-      soundIcon.textContent = soundEnabled ? '🔊' : '🔇';
-      soundLabel.textContent = soundEnabled ? 'Sound On' : 'Sound Off';
-      showToast(soundEnabled ? 'Festive Sounds: ON' : 'Festive Sounds: OFF');
-    });
-
-    // Student Edit Modal
-    editStudentBtn.addEventListener('click', () => {
-      studentModal.style.display = 'flex';
-      inputStudentName.focus();
-    });
-
-    studentForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      saveStudentData(inputStudentName.value, inputAdmissionRef.value);
-      studentModal.style.display = 'none';
-      showToast('Student information updated!');
-    });
-
-    // Close modal on background tap
-    studentModal.addEventListener('click', (e) => {
-      if (e.target === studentModal) {
-        studentModal.style.display = 'none';
-      }
-    });
-
-    // Copy Scratch Card ID
-    copyIdBtn.addEventListener('click', () => {
+    // Copy Card ID
+    copyCardIdBtn.addEventListener('click', () => {
       if (navigator.clipboard) {
         navigator.clipboard.writeText(currentCardId).then(() => {
-          showToast(`Copied Scratch ID: ${currentCardId}`);
-        }).catch(() => {
-          fallbackCopyText(currentCardId);
-        });
+          showToast(`Copied: ${currentCardId}`);
+        }).catch(() => fallbackCopy(currentCardId));
       } else {
-        fallbackCopyText(currentCardId);
+        fallbackCopy(currentCardId);
       }
     });
 
-    // WhatsApp Claim Button
-    whatsappShareBtn.addEventListener('click', () => {
-      const shareMessage = `🪔 *DIZITALADDA - DIWALI SCRATCH & WIN 2026* 🪔\n\n` +
-        `Hello DizitalAdda Team,\nI have scratched and unlocked an exclusive reward!\n\n` +
-        `👤 *Student Name:* ${studentData.name}\n` +
-        `🎫 *Admission / Mobile Ref:* ${studentData.ref}\n` +
+    // WhatsApp Claim
+    claimWhatsappBtn.addEventListener('click', () => {
+      const text = `🪔 *DIZITALADDA • DIWALI SPECIAL 2026*\n\n` +
+        `Hello Team, I have scratched my card and won an exclusive reward!\n\n` +
         `🎁 *Reward Won:* ${assignedOffer.title}\n` +
         `🪙 *Benefit:* ${assignedOffer.coins}\n` +
-        `🔑 *Unique Scratch ID:* ${currentCardId}\n` +
-        `⏳ *Claim Deadline:* ${DEFAULT_CLAIM_DEADLINE}\n\n` +
-        `Kindly verify and map this reward to my student profile. Thank you!`;
+        `🔑 *Unique Card ID:* ${currentCardId}\n` +
+        `⏳ *Valid Till:* ${CLAIM_DEADLINE}\n\n` +
+        `Please verify and register this to my admission profile. Thank you!`;
 
-      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
-      window.open(whatsappUrl, '_blank');
-    });
-
-    // Save Voucher / Print View
-    downloadVoucherBtn.addEventListener('click', () => {
-      printOrSaveVoucher();
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
     });
 
-    // Catalogue Modal
-    openCatalogueBtn.addEventListener('click', () => {
-      catalogueModal.style.display = 'flex';
-    });
-    closeCatalogueBtn.addEventListener('click', () => {
-      catalogueModal.style.display = 'none';
-    });
-    catCloseBtn.addEventListener('click', () => {
-      catalogueModal.style.display = 'none';
-    });
-    catalogueModal.addEventListener('click', (e) => {
-      if (e.target === catalogueModal) {
-        catalogueModal.style.display = 'none';
-      }
-    });
-
-    // Admin Demo Reset Button
-    adminResetBtn.addEventListener('click', () => {
-      const confirmed = window.confirm(
-        "DEMO RESET:\n\nDo you want to reset this mobile device so you can test scratching another card?\n(This clears saved claim state on this device for testing)."
-      );
-      if (confirmed) {
+    // Admin Demo Reset
+    adminDemoReset.addEventListener('click', () => {
+      if (confirm("Reset device scratch status for testing?")) {
         localStorage.removeItem(STORAGE_KEY_CLAIM);
-        showToast('Device reset for testing! Reloading...');
-        setTimeout(() => {
-          window.location.reload();
-        }, 600);
+        showToast("Device reset! Reloading...");
+        setTimeout(() => window.location.reload(), 500);
       }
     });
   }
 
-  function fallbackCopyText(text) {
-    const tempInput = document.createElement('input');
-    tempInput.value = text;
-    document.body.appendChild(tempInput);
-    tempInput.select();
+  function fallbackCopy(text) {
+    const input = document.createElement('input');
+    input.value = text;
+    document.body.appendChild(input);
+    input.select();
     document.execCommand('copy');
-    document.body.removeChild(tempInput);
+    document.body.removeChild(input);
     showToast(`Copied: ${text}`);
   }
 
-  // ==========================================================================
-  // RENDER 11 OFFERS CATALOGUE
-  // ==========================================================================
-  function renderCatalogue() {
-    catalogueList.innerHTML = '';
-    OFFERS_DATA.forEach(offer => {
-      const itemRow = document.createElement('div');
-      itemRow.className = 'cat-item-row';
-      itemRow.innerHTML = `
-        <div class="cat-item-left">
-          <span class="cat-item-badge">OFFER ${offer.id} • ${offer.badge}</span>
-          <span class="cat-item-name">${offer.icon} ${offer.title}</span>
-          <span class="cat-item-details">${offer.highlight}</span>
-        </div>
-        <div class="cat-item-qty" title="Pool Frequency">
-          ${offer.repeatCount}× Repeat
-        </div>
-      `;
-      catalogueList.appendChild(itemRow);
-    });
-  }
-
-  // ==========================================================================
-  // VOUCHER RECEIPT PRINTER / EXPORT
-  // ==========================================================================
-  function printOrSaveVoucher() {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      alert("Please allow pop-ups to view printable voucher.");
-      return;
-    }
-
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>DizitalAdda Diwali Reward Voucher - ${currentCardId}</title>
-        <style>
-          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fdf8f4; color: #2a0512; padding: 30px; }
-          .voucher-box { max-width: 550px; margin: 0 auto; border: 3px double #d4af37; border-radius: 14px; padding: 25px; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-          .voucher-header { text-align: center; border-bottom: 2px solid #ffd700; padding-bottom: 12px; margin-bottom: 15px; }
-          .voucher-title { font-size: 22px; font-weight: 800; color: #7c0e35; margin: 0; }
-          .sub-title { font-size: 13px; color: #b8860b; font-weight: 600; }
-          .code-box { background: #3b0217; color: #ffd700; text-align: center; padding: 12px; border-radius: 8px; font-size: 18px; font-weight: bold; letter-spacing: 2px; margin: 15px 0; }
-          .info-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13.5px; }
-          .info-table td { padding: 8px 6px; border-bottom: 1px solid #eee; }
-          .info-table td.lbl { font-weight: bold; color: #5c0626; width: 40%; }
-          .reward-box { background: #fff6e0; border: 1px solid #ffd700; border-radius: 8px; padding: 12px; margin-bottom: 15px; }
-          .reward-title { font-size: 16px; font-weight: bold; color: #b8860b; }
-          .reward-desc { font-size: 13px; color: #333; margin-top: 4px; }
-          .tc-box { font-size: 10px; color: #666; line-height: 1.4; border-top: 1px dashed #ccc; padding-top: 10px; }
-          .stamp { text-align: center; margin-top: 15px; font-weight: bold; color: #25d366; font-size: 14px; }
-        </style>
-      </head>
-      <body>
-        <div class="voucher-box">
-          <div class="voucher-header">
-            <h1 class="voucher-title">🪔 DIZITALADDA</h1>
-            <div class="sub-title">DIWALI SCRATCH &amp; WIN 2026 OFFICIAL VOUCHER</div>
-          </div>
-
-          <div class="code-box">CARD ID: ${currentCardId}</div>
-
-          <table class="info-table">
-            <tr><td class="lbl">Student Name:</td><td>${studentData.name}</td></tr>
-            <tr><td class="lbl">Admission / Mobile Ref:</td><td>${studentData.ref}</td></tr>
-            <tr><td class="lbl">Status:</td><td>VERIFIED &amp; CLAIMED</td></tr>
-            <tr><td class="lbl">Last Date to Claim:</td><td><strong>${DEFAULT_CLAIM_DEADLINE}</strong></td></tr>
-          </table>
-
-          <div class="reward-box">
-            <div class="reward-title">🎁 ${assignedOffer.title}</div>
-            <div class="reward-desc">${assignedOffer.desc}</div>
-            <div style="margin-top:6px; font-weight:bold; color:#7c0e35;">Skill Coins: ${assignedOffer.coins}</div>
-          </div>
-
-          <div class="tc-box">
-            <strong>Redemption &amp; Terms:</strong> Present this voucher at DizitalAdda admission desk or official WhatsApp support (+91 98765 43210). Valid across Advance and Expert Skill Programs. Cannot be clubbed with external promos. Strictly 1 scratch card per mobile device. Non-transferable.
-          </div>
-
-          <div class="stamp">
-            ✓ OFFICIALLY REGISTERED DIWALI 2026 BENEFIT
-          </div>
-        </div>
-        <script>
-          window.onload = function() { window.print(); }
-        </script>
-      </body>
-      </html>
-    `;
-
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
-  }
-
-  // ==========================================================================
-  // TOAST NOTIFICATION
-  // ==========================================================================
-  let toastTimer = null;
   function showToast(msg) {
-    if (!toastNotification) return;
-    toastNotification.textContent = msg;
-    toastNotification.classList.add('show');
-
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      toastNotification.classList.remove('show');
-    }, 2800);
+    if (!toastBubble) return;
+    toastBubble.textContent = msg;
+    toastBubble.classList.add('show');
+    setTimeout(() => {
+      toastBubble.classList.remove('show');
+    }, 2600);
   }
 
 })();
