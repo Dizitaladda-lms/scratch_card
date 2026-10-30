@@ -53,21 +53,32 @@ body {
 }
 
 /* ==========================================================================
-   TOP DIWALI FESTIVE FAIRY LIGHTS (झालर)
+   DIWALI FESTIVE FAIRY LIGHTS ON ALL SIDES (TOP, BOTTOM, LEFT, RIGHT)
    ========================================================================== */
-.diwali-top-lights {
+.diwali-all-lights {
   position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 25;
+  overflow: hidden;
+}
+
+.diwali-lights-edge {
+  position: fixed;
+  pointer-events: none;
+  z-index: 25;
+}
+
+/* TOP SIDE */
+.edge-top {
   top: 0;
   left: 0;
   right: 0;
-  height: 48px;
-  z-index: 20;
-  pointer-events: none;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(255, 170, 50, 0.18);
+  height: 42px;
+  box-shadow: 0 10px 30px rgba(255, 170, 50, 0.2);
 }
 
-.lights-wire {
+.lights-wire-h {
   position: absolute;
   top: 0;
   left: 0;
@@ -78,14 +89,84 @@ body {
   opacity: 0.8;
 }
 
-.lights-track {
+.lights-track-h {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 0 4px;
+  padding: 0 6px;
   width: 100%;
 }
 
+/* BOTTOM SIDE (Mirrored Inward) */
+.edge-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 42px;
+  transform: rotate(180deg);
+  box-shadow: 0 10px 30px rgba(255, 170, 50, 0.2);
+}
+
+/* LEFT SIDE (Hanging Inward) */
+.edge-left {
+  top: 38px;
+  bottom: 38px;
+  left: 0;
+  width: 32px;
+  box-shadow: 10px 0 25px rgba(255, 170, 50, 0.15);
+}
+
+.lights-wire-v {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 10px;
+  border-right: 2px solid #5a3a1f;
+  opacity: 0.8;
+}
+
+.lights-track-v {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 4px 0 4px 6px;
+  height: 100%;
+}
+
+.edge-left .light-unit {
+  transform: rotate(-90deg);
+  transform-origin: center center;
+}
+
+/* RIGHT SIDE (Hanging Inward) */
+.edge-right {
+  top: 38px;
+  bottom: 38px;
+  right: 0;
+  width: 32px;
+  box-shadow: -10px 0 25px rgba(255, 170, 50, 0.15);
+}
+
+.edge-right .lights-wire-v {
+  left: auto;
+  right: 0;
+  border-right: none;
+  border-left: 2px solid #5a3a1f;
+}
+
+.edge-right .lights-track-v {
+  align-items: flex-end;
+  padding: 4px 6px 4px 0;
+}
+
+.edge-right .light-unit {
+  transform: rotate(90deg);
+  transform-origin: center center;
+}
+
+/* Common Bulb Unit */
 .light-unit {
   position: relative;
   display: flex;
@@ -96,13 +177,13 @@ body {
 }
 
 .light-unit:nth-child(even) {
-  animation-duration: 2.6s;
-  animation-delay: 0.4s;
+  animation-duration: 2.5s;
+  animation-delay: 0.3s;
 }
 
 .light-unit:nth-child(3n) {
   animation-duration: 3.2s;
-  animation-delay: 0.8s;
+  animation-delay: 0.7s;
 }
 
 .bulb-socket {
@@ -158,6 +239,29 @@ body {
 }
 
 @keyframes bulb-twinkle {
+  0%, 100% { opacity: 0.85; filter: brightness(0.95); }
+  50% { opacity: 1; filter: brightness(1.25); }
+}
+
+/* Mobile fine-tuning for all-around lights */
+@media (max-width: 768px) {
+  .edge-top, .edge-bottom {
+    height: 32px;
+  }
+  .edge-left, .edge-right {
+    top: 30px;
+    bottom: 30px;
+    width: 24px;
+  }
+  .bulb-glass {
+    width: 9px;
+    height: 14px;
+  }
+  .bulb-socket {
+    width: 4px;
+    height: 3px;
+  }
+}
   0%, 100% { opacity: 0.85; filter: brightness(0.95); }
   50% { opacity: 1; filter: brightness(1.25); }
 }
