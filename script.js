@@ -168,7 +168,6 @@
   const backBenefitTitle = document.getElementById('back-benefit-title');
   const backDeadline = document.getElementById('back-deadline');
   const copyCardIdBtn = document.getElementById('copy-card-id-btn');
-  const adminDemoReset = document.getElementById('admin-demo-reset');
   const toastBubble = document.getElementById('toast-bubble');
 
   // Web Audio Context
@@ -661,15 +660,6 @@
         `Please verify and register this to my admission profile. Thank you!`;
 
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-    });
-
-    // Admin Demo Reset
-    adminDemoReset.addEventListener('click', () => {
-      if (confirm("Reset device scratch status for testing?")) {
-        localStorage.removeItem(STORAGE_KEY_CLAIM);
-        showToast("Device reset! Reloading...");
-        setTimeout(() => window.location.reload(), 500);
-      }
     });
   }
 
