@@ -14,133 +14,162 @@
 </head>
 <body>
 
-  <!-- Diwali Festive Fairy Lights All Around (Every Side: Top, Bottom, Left, Right) -->
+  <!-- Master SVG Definitions for Realistic Diyas & Gradients -->
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+    <defs>
+      <!-- Radial Ambient Heat Halo -->
+      <radialGradient id="diyaHalo" cx="50%" cy="40%" r="55%">
+        <stop offset="0%" stop-color="#ff9900" stop-opacity="0.85"/>
+        <stop offset="45%" stop-color="#ffb700" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="#ff9900" stop-opacity="0"/>
+      </radialGradient>
+      
+      <!-- Realistic Terracotta Clay Vessel -->
+      <linearGradient id="clayVessel" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#c85a32"/>
+        <stop offset="35%" stop-color="#9a3c1c"/>
+        <stop offset="70%" stop-color="#6e260f"/>
+        <stop offset="100%" stop-color="#461406"/>
+      </linearGradient>
+
+      <!-- Ornamental Golden Rim Highlight -->
+      <linearGradient id="goldRim" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#ffea9f"/>
+        <stop offset="50%" stop-color="#d8ad62"/>
+        <stop offset="100%" stop-color="#996e28"/>
+      </linearGradient>
+
+      <!-- Deep Ghee Oil Reservoir -->
+      <radialGradient id="oilPool" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#5a270a"/>
+        <stop offset="70%" stop-color="#341304"/>
+        <stop offset="100%" stop-color="#1c0901"/>
+      </radialGradient>
+
+      <!-- Realistic Layered Flame Gradients -->
+      <linearGradient id="flameOuter" x1="0.5" y1="1" x2="0.5" y2="0">
+        <stop offset="0%" stop-color="#ff1a00"/>
+        <stop offset="35%" stop-color="#ff6a00"/>
+        <stop offset="70%" stop-color="#ffaa00"/>
+        <stop offset="100%" stop-color="#ffd54f"/>
+      </linearGradient>
+
+      <linearGradient id="flameInner" x1="0.5" y1="1" x2="0.5" y2="0">
+        <stop offset="0%" stop-color="#ff9900"/>
+        <stop offset="40%" stop-color="#ffe600"/>
+        <stop offset="85%" stop-color="#ffffff"/>
+        <stop offset="100%" stop-color="#ffffff"/>
+      </linearGradient>
+
+      <!-- Master Realistic Diya Symbol -->
+      <g id="realisticDiyaMaster">
+        <!-- Glow Aura -->
+        <circle cx="30" cy="18" r="22" fill="url(#diyaHalo)" class="diya-aura-pulse"/>
+        <!-- Soft Vessel Drop Shadow -->
+        <ellipse cx="30" cy="44" rx="20" ry="4" fill="rgba(0,0,0,0.55)" filter="blur(2px)"/>
+        <!-- Terracotta Clay Vessel Body -->
+        <path d="M 8 28 C 10 44 50 44 52 28 C 50 25 40 23 30 23 C 20 23 10 25 8 28 Z" fill="url(#clayVessel)"/>
+        <!-- Ornate Gold Rim Bead Line -->
+        <path d="M 9 28 Q 30 32 51 28 Q 30 30 9 28 Z" fill="url(#goldRim)"/>
+        <!-- Oil Cavity -->
+        <ellipse cx="30" cy="25" rx="18" ry="4" fill="url(#oilPool)"/>
+        <!-- Wick -->
+        <path d="M 28 25 Q 29.5 20 30 18 Q 30.5 20 32 25 Z" fill="#1f0f04"/>
+        <circle cx="30" cy="18" r="1.5" fill="#ff4000"/>
+        <!-- Flickering Flame Group -->
+        <g class="diya-flame-anim">
+          <!-- Outer Flame -->
+          <path d="M 30 3 C 25 10 23 15 26 21 C 28 24 32 24 34 21 C 37 15 35 10 30 3 Z" fill="url(#flameOuter)"/>
+          <!-- Mid Flame -->
+          <path d="M 30 7 C 27 12 26 15 28 19 C 29 21 31 21 32 19 C 34 15 33 12 30 7 Z" fill="url(#flameInner)"/>
+          <!-- White-Hot Core -->
+          <ellipse cx="30" cy="17" rx="1.5" ry="3.5" fill="#ffffff" opacity="0.95"/>
+          <!-- Blue Oxygen Pocket -->
+          <ellipse cx="30" cy="20.5" rx="3" ry="1.2" fill="rgba(60, 160, 255, 0.75)"/>
+        </g>
+      </g>
+    </defs>
+  </svg>
+
+  <!-- Diwali Festive Lighting & Side Realistic Diyas -->
   <div class="diwali-all-lights" aria-hidden="true">
     
-    <!-- TOP SIDE LIGHTS -->
+    <!-- TOP SIDE: Festive Golden Garlands with Micro Glow Lights -->
     <div class="diwali-lights-edge edge-top">
       <div class="lights-wire-h"></div>
       <div class="lights-track-h">
         <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
         <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-cyan"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
         <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
         <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-cyan"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
         <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
         <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
         <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
       </div>
     </div>
 
-    <!-- BOTTOM SIDE LIGHTS -->
+    <!-- BOTTOM SIDE: Festive Golden Garlands with Micro Glow Lights -->
     <div class="diwali-lights-edge edge-bottom">
       <div class="lights-wire-h"></div>
       <div class="lights-track-h">
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-cyan"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-cyan"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
         <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
         <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
+        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
         <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
       </div>
     </div>
 
-    <!-- LEFT SIDE LIGHTS -->
-    <div class="diwali-lights-edge edge-left">
-      <div class="lights-wire-v"></div>
-      <div class="lights-track-v">
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-cyan"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-cyan"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-      </div>
+    <!-- LEFT SIDE: Column of Realistic Glowing Diyas -->
+    <div class="diwali-side-diyas side-left">
+      <div class="side-diya-unit" style="--diya-delay: 0.0s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
+      <div class="side-diya-unit" style="--diya-delay: 0.4s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
+      <div class="side-diya-unit" style="--diya-delay: 0.2s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
+      <div class="side-diya-unit" style="--diya-delay: 0.6s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
+      <div class="side-diya-unit" style="--diya-delay: 0.3s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
     </div>
 
-    <!-- RIGHT SIDE LIGHTS -->
-    <div class="diwali-lights-edge edge-right">
-      <div class="lights-wire-v"></div>
-      <div class="lights-track-v">
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-cyan"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-red"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-green"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-amber"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-cyan"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-        <div class="light-unit bulb-gold"><span class="bulb-socket"></span><span class="bulb-glass"></span></div>
-      </div>
+    <!-- RIGHT SIDE: Column of Realistic Glowing Diyas -->
+    <div class="diwali-side-diyas side-right">
+      <div class="side-diya-unit" style="--diya-delay: 0.1s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
+      <div class="side-diya-unit" style="--diya-delay: 0.5s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
+      <div class="side-diya-unit" style="--diya-delay: 0.3s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
+      <div class="side-diya-unit" style="--diya-delay: 0.7s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
+      <div class="side-diya-unit" style="--diya-delay: 0.2s;"><svg viewBox="0 0 60 50" class="side-diya-svg"><use href="#realisticDiyaMaster"/></svg></div>
     </div>
 
   </div>
 
-  <!-- Subtle Ambient Glow -->
-  <div class="ambient-glow"></div>
   <canvas id="celebration-canvas"></canvas>
 
-  <!-- Fixed Fullscreen Festive Background: Continuous Diagonal DizitalAdda Beam with Glowing Diyas -->
-  <div class="festive-diagonal-backdrop" aria-hidden="true">
-    <div class="diagonal-beam-track">
-
-      <!-- Left Wing: DIZITAL -->
-      <div class="diagonal-wing wing-left">
-        <div class="diya-letter-block" style="--delay: 0.0s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">D</span></div>
-        <div class="diya-letter-block" style="--delay: 0.3s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">I</span></div>
-        <div class="diya-letter-block" style="--delay: 0.6s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">Z</span></div>
-        <div class="diya-letter-block" style="--delay: 0.2s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">I</span></div>
-        <div class="diya-letter-block" style="--delay: 0.7s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">T</span></div>
-        <div class="diya-letter-block" style="--delay: 0.4s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">A</span></div>
-        <div class="diya-letter-block" style="--delay: 0.8s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">L</span></div>
-      </div>
-
-      <!-- Center Spacer where Scratch Card sits in front -->
-      <div class="diagonal-center-spacer"></div>
-
-      <!-- Right Wing: ADDA -->
-      <div class="diagonal-wing wing-right">
-        <div class="diya-letter-block" style="--delay: 0.1s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">A</span></div>
-        <div class="diya-letter-block" style="--delay: 0.5s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">D</span></div>
-        <div class="diya-letter-block" style="--delay: 0.3s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">D</span></div>
-        <div class="diya-letter-block" style="--delay: 0.7s;"><div class="diya-lamp"><svg class="diya-svg" viewBox="0 0 36 28" fill="none"><circle cx="18" cy="10" r="10" fill="url(#diyaFlameAura)"/><path d="M 6 18 C 6 25 30 25 30 18 C 30 16 26 15 18 15 C 10 15 6 16 6 18 Z" fill="url(#diyaGoldMetal)"/><ellipse cx="18" cy="17" rx="9" ry="2" fill="#522405"/><g class="flickering-diya-flame"><path d="M 18 16 C 15.5 12 15 8 18 2 C 21 8 20.5 12 18 16 Z" fill="url(#diyaFlameColor)"/><path d="M 18 15 C 16.5 12 16.5 9 18 4 C 19.5 9 19.5 12 18 15 Z" fill="#ffffff" opacity="0.85"/></g></svg></div><span class="letter-text">A</span></div>
-      </div>
-
-    </div>
-  </div>
-
   <main class="page-container">
+
+    <!-- Royal Festive Diwali Header: Replaces Diagonal Lines with Elegant HAPPY DIWALI -->
+    <header class="festive-diwali-banner" aria-label="Diwali Special">
+      <div class="diwali-greeting-pill">
+        <span class="pill-sparkle">✨</span>
+        <span class="pill-text">SHUBH DEEPAVALI</span>
+        <span class="pill-sparkle">✨</span>
+      </div>
+      <h2 class="diwali-main-heading">HAPPY DIWALI</h2>
+      <div class="diwali-ornament-divider">
+        <span class="div-line left-line"></span>
+        <span class="div-star">✦</span>
+        <span class="div-line right-line"></span>
+      </div>
+    </header>
 
     <div class="card-scene">
 
