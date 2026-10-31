@@ -129,6 +129,7 @@
   ];
 
   const STORAGE_KEY_CLAIM = 'dizitaladda_diwali_claim_2026';
+  const STORAGE_KEY_PENDING = 'dizitaladda_diwali_pending_2026';
   const STORAGE_KEY_POOL = 'dizitaladda_diwali_pool_2026';
   const CLAIM_DEADLINE = '5th November 2026';
 
@@ -250,9 +251,41 @@
   }
 
   // ==========================================================================
-  // 1-SCRATCH-PER-DEVICE LOCKOUT
+  // 1-SCRATCH-PER-DEVICE LOCKOUT & SESSION STATE
   // ==========================================================================
+  function resetCampaignStorage() {
+    try {
+      localStorage.removeItem(STORAGE_KEY_CLAIM);
+      localStorage.removeItem(STORAGE_KEY_PENDING);
+      localStorage.removeItem(STORAGE_KEY_POOL);
+    } catch (e) {}
+  }
+
+  // Admin console helper
+  window.resetDiwaliCampaign = function() {
+    resetCampaignStorage();
+    window.location.reload();
+  };
+
   function checkDeviceClaimStatus() {
+    // Secret URL reset trigger (#reset or ?reset=1)
+    if (window.location.hash === '#reset' || window.location.search.includes('reset=1')) {
+      resetCampaignStorage();
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    }
+
+    // Check optional forced offer via URL (?offer=1 to 11) for testing
+    let urlOffer = null;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const offParam = parseInt(params.get('offer'), 10);
+      if (offParam >= 1 && offParam <= 11) {
+        urlOffer = OFFERS_DATA.find(o => o.id === offParam);
+      }
+    } catch (e) {}
+
     let savedClaim = null;
     try {
       const raw = localStorage.getItem(STORAGE_KEY_CLAIM);
@@ -262,18 +295,51 @@
     }
 
     if (savedClaim && savedClaim.claimed) {
-      // Device has already scratched
+      // Device has already scratched - Permanent Lockout
       hasScratched = true;
       assignedOffer = OFFERS_DATA.find(o => o.id === savedClaim.offerId) || OFFERS_DATA[0];
       currentCardId = savedClaim.cardId || generateCardId();
       renderClaimedView();
-    } else {
-      // First visit on this device: Prepare fresh scratch card
-      hasScratched = false;
-      currentCardId = generateCardId();
-      assignedOffer = drawRandomOffer();
-      renderFreshView();
+      return;
     }
+
+    // If an offer is forced via URL parameter
+    if (urlOffer) {
+      hasScratched = false;
+      assignedOffer = urlOffer;
+      currentCardId = generateCardId();
+      renderFreshView();
+      return;
+    }
+
+    // Check if device already has a card assigned before scratching
+    let savedPending = null;
+    try {
+      const rawPending = localStorage.getItem(STORAGE_KEY_PENDING);
+      if (rawPending) savedPending = JSON.parse(rawPending);
+    } catch (e) {}
+
+    if (savedPending && savedPending.offerId && savedPending.cardId) {
+      // Resume current assigned card without consuming new inventory
+      hasScratched = false;
+      assignedOffer = OFFERS_DATA.find(o => o.id === savedPending.offerId) || OFFERS_DATA[0];
+      currentCardId = savedPending.cardId;
+      renderFreshView();
+      return;
+    }
+
+    // First visit on this device: Draw fresh card from the 48-item quota pool
+    hasScratched = false;
+    currentCardId = generateCardId();
+    assignedOffer = drawRandomOffer();
+    try {
+      localStorage.setItem(STORAGE_KEY_PENDING, JSON.stringify({
+        offerId: assignedOffer.id,
+        cardId: currentCardId
+      }));
+    } catch (e) {}
+
+    renderFreshView();
   }
 
   function renderFreshView() {
@@ -892,7 +958,7 @@
     scratchCanvasContainer.classList.add('hidden');
     actionDock.style.display = 'grid';
 
-    // Lock to device in localStorage
+    // Lock to device in localStorage & clear pending
     try {
       localStorage.setItem(STORAGE_KEY_CLAIM, JSON.stringify({
         claimed: true,
@@ -900,6 +966,7 @@
         offerId: assignedOffer.id,
         claimedAt: new Date().toISOString()
       }));
+      localStorage.removeItem(STORAGE_KEY_PENDING);
     } catch (e) {
       console.warn("Storage save error:", e);
     }
@@ -1081,6 +1148,29 @@
 
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
     });
+
+    // Discreet 5-tap on header brand logo to reset device (Admin/Staff only, leaves no visible UI buttons)
+    const brandLogoWrap = document.querySelector('.brand-logo-wrap');
+    if (brandLogoWrap) {
+      let logoClicks = 0;
+      let lastClickTime = 0;
+      brandLogoWrap.addEventListener('click', () => {
+        const now = Date.now();
+        if (now - lastClickTime < 800) {
+          logoClicks++;
+        } else {
+          logoClicks = 1;
+        }
+        lastClickTime = now;
+
+        if (logoClicks >= 5) {
+          logoClicks = 0;
+          resetCampaignStorage();
+          showToast('Campaign Reset: Loading new card...');
+          setTimeout(() => window.location.reload(), 600);
+        }
+      });
+    }
   }
 
   function fallbackCopy(text) {
