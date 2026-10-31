@@ -186,6 +186,14 @@
             <span class="sub-brand">DIWALI SPECIAL 2026</span>
             <h1 class="main-heading">SCRATCH &amp; WIN</h1>
             <p class="tagline">Your next career opportunity could be one scratch away!</p>
+
+            <!-- Student Identity Badge (Shows name & mobile once registered) -->
+            <div class="front-student-badge" id="front-student-badge" style="display: none;">
+              <span class="fs-icon">👤</span>
+              <span class="fs-name" id="front-student-name">Student</span>
+              <span class="fs-sep">•</span>
+              <span class="fs-phone" id="front-student-phone">+91 88106 06010</span>
+            </div>
           </div>
 
           <!-- Scratch / Reward Center Container -->
@@ -284,7 +292,7 @@
               <span class="item-label">REWARD REDEMPTION INSTRUCTIONS</span>
               <ol class="steps-list">
                 <li>Take a screenshot of this voucher or note down your <strong>Unique Card ID</strong>.</li>
-                <li>Show this card at the DizitalAdda admission desk or send to official WhatsApp at <strong>+91 98765 43210</strong>.</li>
+                <li>Show this card at the DizitalAdda admission desk or send to official WhatsApp at <strong>+91 88106 06010</strong>.</li>
                 <li>Skill Coins &amp; complimentary benefits will be verified and mapped to your student profile upon enrollment.</li>
               </ol>
             </div>
@@ -353,6 +361,62 @@
 
   <!-- Toast Message -->
   <div class="toast-bubble" id="toast-bubble">Notification</div>
+
+  <!-- Student Registration Modal (Required before scratching) -->
+  <div class="student-modal-backdrop" id="student-modal" style="display: none;">
+    <div class="student-modal-box">
+      <div class="modal-festive-badge">
+        <span class="modal-sparkle">✨</span>
+        <span>DIWALI SPECIAL 2026</span>
+        <span class="modal-sparkle">✨</span>
+      </div>
+      <div class="modal-diya-icon">🪔</div>
+      <h3 class="modal-title">Enter Details to Scratch</h3>
+      <p class="modal-subtitle">Enter your name and mobile number to unlock your exclusive Diwali reward card.</p>
+      
+      <form class="modal-form" id="student-reg-form" onsubmit="return false;">
+        <div class="form-group">
+          <label class="form-label" for="input-student-name">STUDENT FULL NAME</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input 
+              type="text" 
+              id="input-student-name" 
+              class="festive-input" 
+              placeholder="e.g. Rahul Sharma" 
+              autocomplete="name"
+              required 
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-student-phone">WHATSAPP / MOBILE NUMBER</label>
+          <div class="input-wrap phone-input-wrap">
+            <span class="phone-prefix">+91</span>
+            <input 
+              type="tel" 
+              id="input-student-phone" 
+              class="festive-input phone-input" 
+              placeholder="10-digit mobile number" 
+              maxlength="10" 
+              autocomplete="tel"
+              pattern="[0-9]{10}"
+              required 
+            />
+          </div>
+        </div>
+
+        <div class="modal-error" id="modal-error" style="display: none;"></div>
+
+        <button type="submit" class="modal-submit-btn" id="modal-submit-btn">
+          <span>🎁</span> Unlock &amp; Scratch Card
+        </button>
+
+        <p class="modal-privacy-note">🔒 Your details will be registered on your official voucher card.</p>
+      </form>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

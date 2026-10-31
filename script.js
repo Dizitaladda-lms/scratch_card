@@ -128,10 +128,15 @@
     }
   ];
 
-  const STORAGE_KEY_CLAIM = 'dizitaladda_diwali_claim_2026';
-  const STORAGE_KEY_PENDING = 'dizitaladda_diwali_pending_2026';
-  const STORAGE_KEY_POOL = 'dizitaladda_diwali_pool_2026';
+  // Live Campaign Versioning: Bump version to restart all coupons and claims cleanly across all devices
+  const CAMPAIGN_VERSION = '2026_LIVE_RESTART';
+  const STORAGE_KEY_VERSION = 'da_diwali_campaign_version';
+  const STORAGE_KEY_CLAIM = `da_diwali_claim_${CAMPAIGN_VERSION}`;
+  const STORAGE_KEY_PENDING = `da_diwali_pending_${CAMPAIGN_VERSION}`;
+  const STORAGE_KEY_POOL = `da_diwali_pool_${CAMPAIGN_VERSION}`;
+  const STORAGE_KEY_STUDENT = `da_diwali_student_${CAMPAIGN_VERSION}`;
   const CLAIM_DEADLINE = '5th November 2026';
+  const WHATSAPP_PHONE = '918810606010';
 
   // State
   let isCardFlipped = false;
@@ -139,6 +144,8 @@
   let hasScratched = false;
   let assignedOffer = null;
   let currentCardId = null;
+  let registeredStudent = null; // { name, phone }
+  let flipTimer = null;
 
   // Canvas
   let canvas, ctx;
@@ -150,12 +157,27 @@
 
   // DOM Elements
   const card3D = document.getElementById('scratch-card-3d');
+  const cardFront = document.getElementById('card-front');
+  const cardBack = document.getElementById('card-back');
   const rewardBadge = document.getElementById('reward-badge');
   const rewardIcon = document.getElementById('reward-icon');
   const rewardTitle = document.getElementById('reward-title');
   const rewardDesc = document.getElementById('reward-desc');
   const rewardCoinVal = document.getElementById('reward-coin-val');
   const frontCardId = document.getElementById('front-card-id');
+
+  // Student Identity elements
+  const frontStudentBadge = document.getElementById('front-student-badge');
+  const frontStudentName = document.getElementById('front-student-name');
+  const frontStudentPhone = document.getElementById('front-student-phone');
+
+  // Modal elements
+  const studentModal = document.getElementById('student-modal');
+  const studentRegForm = document.getElementById('student-reg-form');
+  const inputStudentName = document.getElementById('input-student-name');
+  const inputStudentPhone = document.getElementById('input-student-phone');
+  const modalError = document.getElementById('modal-error');
+  const modalSubmitBtn = document.getElementById('modal-submit-btn');
 
   const scratchCanvasContainer = document.getElementById('scratch-canvas-container');
   const scratchPadContent = document.getElementById('scratch-pad-content');
@@ -166,6 +188,8 @@
 
   // Back elements
   const backScratchId = document.getElementById('back-scratch-id');
+  const backStudentName = document.getElementById('back-student-name');
+  const backStudentRef = document.getElementById('back-student-ref');
   const backBenefitTitle = document.getElementById('back-benefit-title');
   const backDeadline = document.getElementById('back-deadline');
   const copyCardIdBtn = document.getElementById('copy-card-id-btn');
@@ -174,11 +198,36 @@
   // Web Audio Context
   let audioCtx = null;
 
+  // Restart & migrate campaign: cleans all legacy keys on all devices
+  function checkAndMigrateCampaignVersion() {
+    try {
+      const savedVersion = localStorage.getItem(STORAGE_KEY_VERSION);
+      if (savedVersion !== CAMPAIGN_VERSION) {
+        // Clear all previous test session data and coupons from all devices
+        const allOldKeys = [
+          'dizitaladda_diwali_claim_2026',
+          'dizitaladda_diwali_pending_2026',
+          'dizitaladda_diwali_pool_2026',
+          'dizitaladda_diwali_student_2026',
+          'dizitaladda_diwali_claim',
+          'dizitaladda_diwali_pool',
+          'test_claimed'
+        ];
+        allOldKeys.forEach(k => localStorage.removeItem(k));
+        localStorage.setItem(STORAGE_KEY_VERSION, CAMPAIGN_VERSION);
+      }
+    } catch (e) {
+      console.warn("Storage migration error:", e);
+    }
+  }
+
   // Initialize
   window.addEventListener('DOMContentLoaded', () => {
+    checkAndMigrateCampaignVersion();
     initAudio();
     initFireworks();
     checkDeviceClaimStatus();
+    initStudentDetails();
     setupEventListeners();
   });
 
@@ -258,6 +307,8 @@
       localStorage.removeItem(STORAGE_KEY_CLAIM);
       localStorage.removeItem(STORAGE_KEY_PENDING);
       localStorage.removeItem(STORAGE_KEY_POOL);
+      localStorage.removeItem(STORAGE_KEY_STUDENT);
+      localStorage.removeItem(STORAGE_KEY_VERSION);
     } catch (e) {}
   }
 
@@ -354,6 +405,102 @@
       scratchCanvasContainer.classList.add('hidden');
     }
     actionDock.style.display = 'grid';
+  }
+
+  // ==========================================================================
+  // STUDENT REGISTRATION (MANDATORY BEFORE SCRATCH)
+  // ==========================================================================
+  function isStudentRegistered() {
+    return !!(registeredStudent && registeredStudent.name && registeredStudent.phone);
+  }
+
+  function initStudentDetails() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_STUDENT);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed.name && parsed.phone) {
+          registeredStudent = parsed;
+          updateStudentUI(registeredStudent.name, registeredStudent.phone);
+          hideStudentModal();
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Error reading student details:", e);
+    }
+
+    // Not registered yet
+    registeredStudent = null;
+    if (!hasScratched) {
+      showStudentModal();
+    }
+  }
+
+  function updateStudentUI(name, phone) {
+    if (frontStudentBadge && frontStudentName && frontStudentPhone) {
+      frontStudentName.textContent = name;
+      frontStudentPhone.textContent = `+91 ${phone}`;
+      frontStudentBadge.style.display = 'inline-flex';
+    }
+    if (backStudentName) {
+      backStudentName.textContent = name;
+    }
+    if (backStudentRef) {
+      backStudentRef.textContent = `+91 ${phone}`;
+    }
+  }
+
+  function showStudentModal() {
+    if (!studentModal) return;
+    studentModal.style.display = 'flex';
+    if (modalError) modalError.style.display = 'none';
+    setTimeout(() => {
+      if (inputStudentName) inputStudentName.focus();
+    }, 250);
+  }
+
+  function hideStudentModal() {
+    if (!studentModal) return;
+    studentModal.style.display = 'none';
+  }
+
+  function handleStudentFormSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!inputStudentName || !inputStudentPhone) return;
+
+    const nameVal = inputStudentName.value.trim();
+    const phoneVal = inputStudentPhone.value.trim().replace(/[^0-9]/g, '');
+
+    if (!nameVal || nameVal.length < 2) {
+      showModalError('Please enter your full name (at least 2 letters).');
+      inputStudentName.focus();
+      return;
+    }
+
+    if (!phoneVal || phoneVal.length !== 10 || !/^[6-9]\d{9}$/.test(phoneVal)) {
+      showModalError('Please enter a valid 10-digit Indian mobile number.');
+      inputStudentPhone.focus();
+      return;
+    }
+
+    registeredStudent = { name: nameVal, phone: phoneVal };
+    try {
+      localStorage.setItem(STORAGE_KEY_STUDENT, JSON.stringify(registeredStudent));
+    } catch (err) {
+      console.warn("Storage write error for student:", err);
+    }
+
+    updateStudentUI(nameVal, phoneVal);
+    hideStudentModal();
+    playFanfare();
+    showToast(`✨ Welcome, ${nameVal}! Scratch to reveal your reward 🪔`);
+  }
+
+  function showModalError(msg) {
+    if (!modalError) return;
+    modalError.textContent = msg;
+    modalError.style.display = 'block';
   }
 
   // ==========================================================================
@@ -787,6 +934,10 @@
     backScratchId.textContent = cardId;
     backBenefitTitle.textContent = `${offer.title} (${offer.coins})`;
     backDeadline.textContent = CLAIM_DEADLINE;
+
+    if (registeredStudent && registeredStudent.name && registeredStudent.phone) {
+      updateStudentUI(registeredStudent.name, registeredStudent.phone);
+    }
   }
 
   // ==========================================================================
@@ -846,6 +997,10 @@
 
   function startScratch(e) {
     if (hasScratched) return;
+    if (!isStudentRegistered()) {
+      showStudentModal();
+      return;
+    }
     isScratching = true;
     lastScratchX = null;
     lastScratchY = null;
@@ -867,6 +1022,11 @@
 
   function startScratchTouch(e) {
     if (hasScratched) return;
+    if (!isStudentRegistered()) {
+      e.preventDefault();
+      showStudentModal();
+      return;
+    }
     e.preventDefault();
     isScratching = true;
     lastScratchX = null;
@@ -1112,18 +1272,80 @@
   // ==========================================================================
   function flipCard() {
     isCardFlipped = !isCardFlipped;
+    if (flipTimer) clearTimeout(flipTimer);
+
     if (isCardFlipped) {
+      // Transitioning to card back
+      if (cardBack) {
+        cardBack.style.visibility = 'visible';
+        cardBack.style.opacity = '1';
+        cardBack.style.pointerEvents = 'auto';
+      }
       card3D.classList.add('flipped');
       toggleFlipBtn.innerHTML = `<span>🔄</span> View Card Front`;
+
+      // At halfway (380ms), hide cardFront completely to eliminate iOS Safari 3D ghosting & touch freeze
+      flipTimer = setTimeout(() => {
+        if (isCardFlipped && cardFront) {
+          cardFront.style.visibility = 'hidden';
+          cardFront.style.pointerEvents = 'none';
+          cardFront.style.opacity = '0';
+        }
+      }, 380);
     } else {
+      // Transitioning to card front
+      if (cardFront) {
+        cardFront.style.visibility = 'visible';
+        cardFront.style.opacity = '1';
+        cardFront.style.pointerEvents = 'auto';
+      }
       card3D.classList.remove('flipped');
       toggleFlipBtn.innerHTML = `<span>🔄</span> View Card Details / T&amp;C`;
+
+      // At halfway (380ms), hide cardBack
+      flipTimer = setTimeout(() => {
+        if (!isCardFlipped && cardBack) {
+          cardBack.style.visibility = 'hidden';
+          cardBack.style.pointerEvents = 'none';
+          cardBack.style.opacity = '0';
+        }
+      }, 380);
     }
   }
 
   function setupEventListeners() {
     toggleFlipBtn.addEventListener('click', flipCard);
     flipBackBtn.addEventListener('click', flipCard);
+
+    // Student Registration Form Events
+    if (studentRegForm) {
+      studentRegForm.addEventListener('submit', handleStudentFormSubmit);
+    }
+    if (modalSubmitBtn) {
+      modalSubmitBtn.addEventListener('click', handleStudentFormSubmit);
+    }
+
+    // Allow editing name/mobile before scratch by clicking student badge
+    if (frontStudentBadge) {
+      frontStudentBadge.addEventListener('click', () => {
+        if (!hasScratched) {
+          if (registeredStudent) {
+            if (inputStudentName) inputStudentName.value = registeredStudent.name || '';
+            if (inputStudentPhone) inputStudentPhone.value = registeredStudent.phone || '';
+          }
+          showStudentModal();
+        }
+      });
+    }
+
+    // Tapping scratch pad before registering shows modal
+    if (scratchPadContent) {
+      scratchPadContent.addEventListener('click', () => {
+        if (!isStudentRegistered()) {
+          showStudentModal();
+        }
+      });
+    }
 
     // Copy Card ID
     copyCardIdBtn.addEventListener('click', () => {
@@ -1136,17 +1358,23 @@
       }
     });
 
-    // WhatsApp Claim
+    // WhatsApp Claim to official number 8810606010
     claimWhatsappBtn.addEventListener('click', () => {
+      const sName = (registeredStudent && registeredStudent.name) ? registeredStudent.name : 'Eligible Candidate';
+      const sPhone = (registeredStudent && registeredStudent.phone) ? registeredStudent.phone : '';
+
       const text = `🪔 *DIZITALADDA • DIWALI SPECIAL 2026*\n\n` +
-        `Hello Team, I have scratched my card and won an exclusive reward!\n\n` +
+        `Hello Team DizitalAdda, I have scratched my Diwali Card and won an exclusive reward!\n\n` +
+        `👤 *Student Name:* ${sName}\n` +
+        `📱 *Mobile Number:* +91 ${sPhone}\n` +
         `🎁 *Reward Won:* ${assignedOffer.title}\n` +
         `🪙 *Benefit:* ${assignedOffer.coins}\n` +
         `🔑 *Unique Card ID:* ${currentCardId}\n` +
         `⏳ *Valid Till:* ${CLAIM_DEADLINE}\n\n` +
         `Please verify and register this to my admission profile. Thank you!`;
 
-      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+      const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(text)}`;
+      window.open(waUrl, '_blank');
     });
 
     // Discreet 5-tap on header brand logo to reset device (Admin/Staff only, leaves no visible UI buttons)

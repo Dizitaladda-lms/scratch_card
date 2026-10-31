@@ -337,7 +337,7 @@ body {
   transform: rotateY(180deg);
 }
 
-/* Shared Card Face Styling */
+/* Shared Card Face Styling - Flattened for iOS Safari 3D compatibility */
 .card-face {
   position: absolute;
   top: 0;
@@ -350,9 +350,44 @@ body {
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(216, 173, 98, 0.08);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform-style: flat;
+  -webkit-transform-style: flat;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* Strict visibility toggling to eliminate iOS Safari 3D ghosting & touch freeze */
+.scratch-card-3d.flipped .card-front {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.scratch-card-3d.flipped .card-back {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: 10 !important;
+  transform: rotateY(180deg) translateZ(1px) !important;
+  -webkit-transform: rotateY(180deg) translateZ(1px) !important;
+}
+
+.scratch-card-3d:not(.flipped) .card-back {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.scratch-card-3d:not(.flipped) .card-front {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: 10 !important;
+  transform: rotateY(0deg) translateZ(1px);
+  -webkit-transform: rotateY(0deg) translateZ(1px);
 }
 
 /* ==========================================================================
@@ -613,18 +648,23 @@ body {
    CARD BACK (Official Voucher - Clean Minimal Dark Luxury)
    ========================================================================== */
 .card-back {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(1px);
+  -webkit-transform: rotateY(180deg) translateZ(1px);
   padding: 18px 16px;
 }
 
 .back-inner {
   height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  overscroll-behavior-y: contain;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  -webkit-overflow-scrolling: touch;
   padding-right: 4px;
+  position: relative;
+  z-index: 15;
 }
 
 .back-inner::-webkit-scrollbar {
@@ -1102,4 +1142,246 @@ body {
   .tagline {
     font-size: 11px;
   }
+}
+
+/* ==========================================================================
+   STUDENT IDENTITY BADGE (FRONT)
+   ========================================================================== */
+.front-student-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(216, 173, 98, 0.14);
+  border: 1px solid rgba(216, 173, 98, 0.35);
+  border-radius: 20px;
+  padding: 3px 10px;
+  margin-top: 4px;
+  font-size: 10.5px;
+  color: #ffea9f;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.front-student-badge .fs-icon {
+  font-size: 11px;
+}
+
+.front-student-badge .fs-name {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.front-student-badge .fs-sep {
+  color: rgba(216, 173, 98, 0.6);
+  font-size: 9px;
+}
+
+.front-student-badge .fs-phone {
+  font-weight: 600;
+  color: #ebd090;
+}
+
+/* ==========================================================================
+   STUDENT REGISTRATION MODAL
+   ========================================================================== */
+.student-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(12, 5, 8, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: modal-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.student-modal-box {
+  width: 100%;
+  max-width: 326px;
+  background: radial-gradient(circle at 50% 0%, #2f1523 0%, #170b10 100%);
+  border: 1.5px solid rgba(216, 173, 98, 0.5);
+  border-radius: 22px;
+  padding: 22px 18px 18px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.9), 0 0 40px rgba(216, 173, 98, 0.2);
+  text-align: center;
+  position: relative;
+  animation: modal-pop-up 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes modal-pop-up {
+  from { transform: scale(0.88); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-festive-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(216, 173, 98, 0.15);
+  border: 1px solid rgba(216, 173, 98, 0.35);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--gold-primary);
+  margin-bottom: 6px;
+}
+
+.modal-diya-icon {
+  font-size: 28px;
+  margin-bottom: 2px;
+  filter: drop-shadow(0 0 8px rgba(255, 170, 0, 0.7));
+}
+
+.modal-title {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 4px;
+  letter-spacing: 0.5px;
+}
+
+.modal-subtitle {
+  font-size: 11px;
+  color: #dfd0c4;
+  line-height: 1.4;
+  margin: 0 0 14px;
+  opacity: 0.9;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  text-align: left;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ebd090;
+  text-transform: uppercase;
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 13px;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.festive-input {
+  width: 100%;
+  background: rgba(10, 4, 7, 0.65);
+  border: 1px solid rgba(216, 173, 98, 0.35);
+  border-radius: 10px;
+  padding: 11px 12px 11px 34px;
+  font-size: 16px; /* Prevents auto-zoom on iOS Safari */
+  font-family: var(--font-body);
+  color: #ffffff;
+  outline: none;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.festive-input::placeholder {
+  color: rgba(223, 208, 196, 0.45);
+  font-size: 13.5px;
+}
+
+.festive-input:focus {
+  border-color: var(--gold-bright);
+  background: rgba(15, 6, 11, 0.85);
+  box-shadow: 0 0 12px rgba(216, 173, 98, 0.35);
+}
+
+.phone-input-wrap .phone-prefix {
+  position: absolute;
+  left: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ebd090;
+  pointer-events: none;
+  padding-right: 6px;
+  border-right: 1px solid rgba(216, 173, 98, 0.3);
+  line-height: 1;
+}
+
+.festive-input.phone-input {
+  padding-left: 48px;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.modal-error {
+  background: rgba(255, 75, 75, 0.15);
+  border: 1px solid rgba(255, 75, 75, 0.4);
+  color: #ff9999;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 7px 10px;
+  border-radius: 8px;
+  text-align: center;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.modal-submit-btn {
+  background: linear-gradient(135deg, #ffea9f 0%, #d8ad62 50%, #9e6f28 100%);
+  border: none;
+  border-radius: 12px;
+  color: #170a10;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(216, 173, 98, 0.35);
+  transition: all 0.25s ease;
+  margin-top: 4px;
+}
+
+.modal-submit-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 10px rgba(216, 173, 98, 0.2);
+}
+
+.modal-privacy-note {
+  font-size: 10px;
+  color: #9d8c82;
+  text-align: center;
+  margin: 6px 0 0;
 }
